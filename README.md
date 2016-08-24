@@ -1,8 +1,7 @@
 
 # hot-update
-update
 
-Application created by CJH
+hot update server Application created by CJH
 
 ## Install dependencies
 
@@ -23,4 +22,3 @@ Use pm2 to deploy app on production enviroment.
 ```
 pm2 startOrReload pm2.json
 ```
-

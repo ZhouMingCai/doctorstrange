@@ -38,7 +38,11 @@ exports.modules = {
 
 	var _components = __webpack_require__(110);
 
+	var _tools = __webpack_require__(118);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -60,7 +64,10 @@ exports.modules = {
 	            password: '', //密码
 	            email: '', //邮箱
 	            phone: '', //联系电话
-	            comfirmPass: '' };
+	            comfirmPass: '', //确认密码
+	            errorMsg: '',
+	            errorMsgSign: ''
+	        };
 	        _this.timeout = 0;
 	        return _this;
 	    }
@@ -112,17 +119,87 @@ exports.modules = {
 	    }, {
 	        key: '_loginSubmitAction',
 	        value: function _loginSubmitAction() {
-	            if (this.state.userName && this.state.password) {}
+	            var _this2 = this;
+
+	            this.setState({
+	                errorMsgSign: ''
+	            });
+	            if (this.state.userName && this.state.password) {
+	                var Response = (0, _tools.request)('/home/login/login', {
+	                    userName: this.state.userName,
+	                    password: this.state.password
+	                }, function (res) {
+	                    console.log('success', res);
+	                }, function (err) {
+	                    console.log(err);
+	                    _this2.setState({
+	                        errorMsg: err.errmsg
+	                    });
+	                    console.log(_this2.state.errorMsg);
+	                });
+
+	                console.log(Response);
+	            }
 	        }
 	    }, {
 	        key: '_signUpSubmitAction',
-	        value: function _signUpSubmitAction() {
-	            if (this.state.userName && this.state.password && this.state.password == this.state.comfirmPass) {}
-	        }
+	        value: function () {
+	            var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
+	                var _this3 = this;
+
+	                var Response;
+	                return regeneratorRuntime.wrap(function _callee$(_context) {
+	                    while (1) {
+	                        switch (_context.prev = _context.next) {
+	                            case 0:
+	                                this.setState({
+	                                    errorMsg: ''
+	                                });
+
+	                                if (!(this.state.userName && this.state.password && this.state.password == this.state.comfirmPass)) {
+	                                    _context.next = 6;
+	                                    break;
+	                                }
+
+	                                _context.next = 4;
+	                                return (0, _tools.request)('/home/register', {
+	                                    userName: this.state.userName,
+	                                    password: this.state.password,
+	                                    email: this.state.email,
+	                                    phone: this.state.phone
+	                                }, function (res) {
+	                                    alert(res);
+	                                }, function (err) {
+	                                    console.log(err);
+	                                    _this3.setState({
+	                                        errorMsgSign: err.errmsg
+	                                    });
+	                                });
+
+	                            case 4:
+	                                Response = _context.sent;
+
+
+	                                console.log(Response);
+
+	                            case 6:
+	                            case 'end':
+	                                return _context.stop();
+	                        }
+	                    }
+	                }, _callee, this);
+	            }));
+
+	            function _signUpSubmitAction() {
+	                return _ref.apply(this, arguments);
+	            }
+
+	            return _signUpSubmitAction;
+	        }()
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this2 = this;
+	            var _this4 = this;
 
 	            return _react2.default.createElement(
 	                'div',
@@ -135,7 +212,7 @@ exports.modules = {
 	                        {
 	                            tabItemContainerStyle: _login_sign_up2.default.tabItemContainerStyle,
 	                            onChange: function onChange(value) {
-	                                return _this2._onchangeTab(value);
+	                                return _this4._onchangeTab(value);
 	                            },
 	                            value: this.state.selectValue
 	                        },
@@ -218,10 +295,15 @@ exports.modules = {
 	                                onChange: this._onComfirmPassChange.bind(this)
 	                            }),
 	                            _react2.default.createElement('br', null),
+	                            this.state.errorMsgSign ? _react2.default.createElement(
+	                                'div',
+	                                { style: _login_sign_up2.default.errorMsg },
+	                                this.state.errorMsgSign
+	                            ) : null,
 	                            _react2.default.createElement(
 	                                'div',
 	                                { style: _login_sign_up2.default.btnContainer },
-	                                _react2.default.createElement(_RaisedButton2.default, { label: '确认注册', style: _login_sign_up2.default.submitBtn, secondary: true, onClick: this._signUpSubmitAction })
+	                                _react2.default.createElement(_RaisedButton2.default, { label: '确认注册', style: _login_sign_up2.default.submitBtn, secondary: true, onClick: this._signUpSubmitAction.bind(this) })
 	                            )
 	                        ),
 	                        _react2.default.createElement(
@@ -265,10 +347,15 @@ exports.modules = {
 	                                onChange: this._onPassordChange.bind(this)
 	                            }),
 	                            _react2.default.createElement('br', null),
+	                            this.state.errorMsg ? _react2.default.createElement(
+	                                'div',
+	                                { style: _login_sign_up2.default.errorMsg },
+	                                this.state.errorMsg
+	                            ) : null,
 	                            _react2.default.createElement(
 	                                'div',
 	                                { style: _login_sign_up2.default.btnContainer },
-	                                _react2.default.createElement(_RaisedButton2.default, { label: '登录', style: _login_sign_up2.default.submitBtn, secondary: true })
+	                                _react2.default.createElement(_RaisedButton2.default, { label: '登录', style: _login_sign_up2.default.submitBtn, secondary: true, onClick: this._loginSubmitAction.bind(this) })
 	                            )
 	                        )
 	                    )
@@ -332,6 +419,11 @@ exports.modules = {
 	        textAlign: 'center',
 	        padding: 10,
 	        marginTop: 20
+	    },
+	    errorMsg: {
+	        textAlign: 'center',
+	        padding: 10,
+	        color: 'red'
 	    }
 
 	};
@@ -1132,6 +1224,7 @@ exports.modules = {
 
 	module.exports = {
 	    TextField: __webpack_require__(111)
+
 	};
 
 /***/ },
@@ -2428,6 +2521,78 @@ exports.modules = {
 	TextFieldUnderline.defaultProps = defaultProps;
 
 	exports.default = TextFieldUnderline;
+
+/***/ },
+
+/***/ 118:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = {
+	    request: __webpack_require__(119)
+	};
+
+/***/ },
+
+/***/ 119:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	__webpack_require__(69);
+
+	module.exports = function (url, params, success, error) {
+
+	    return fetch(url, {
+	        method: 'post',
+	        headers: createHeaders(),
+	        body: JSON.stringify(params),
+	        redirect: 'follow'
+	    }).then(status).then(json).then(function (res) {
+	        if (res.errno == 0) {
+	            success ? success(res.data) : null;
+	        } else {
+	            console.error(res.errmsg);
+	            console.log(res);
+	            error ? error(res) : null;
+	        }
+	    }).catch(function (err) {
+	        console.log(err);
+	    });
+	};
+
+	function status(response) {
+	    console.log(response);
+	    if (response.status == 203) {
+	        console.log('i am  in  203.......');
+	        // if(__STORE.getState().userReducer.sessionId){
+	        //     __STORE.dispatch({type : DO_LOGOUT});
+	        // }
+	    } else if (response.status != 200) {
+	        console.log(response.status);
+	    } else if (response.status == 404) {
+	        console.log('not found');
+	    }
+	    response.redirect();
+	    return response;
+	}
+	//json转换
+	function json(response) {
+	    return response.json();
+	}
+
+	//创建请求头
+	function createHeaders(isLoginHeader) {
+	    var header = {
+	        'Accept': 'application/json,text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+	        'Content-Type': 'application/json'
+	    };
+	    // if(!isLoginHeader){
+	    //     header['Cookie'] = 'SESSION=' + __STORE.getState().userReducer.sessionId
+	    // }
+	    return header;
+	}
 
 /***/ }
 

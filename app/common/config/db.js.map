@@ -4,9 +4,9 @@
         "../../../src/common/config/db.js"
     ],
     "names": [],
-    "mappings": "AAAA;AACA;;;;;;kBAIe;AACb,QAAM,OADO;AAEb,WAAS;AACP,WAAO;AACL,YAAM,oCADD;AAEL,YAAM,MAFD;AAGL,gBAAU,MAHL;AAIL,YAAM,MAJD;AAKL,gBAAU,YALL;AAML,cAAQ,QANH;AAOL,gBAAU;AAPL,KADA;AAUP,WAAO;AAVA;AAFI,C",
+    "mappings": "AAAA;AACA;;;;;;kBAIe;AACb,QAAM,OADO;AAEb,WAAS;AACP;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA,WAAO;AACL,YAAM,iBADD;AAEL,YAAM,MAFD;AAGL,gBAAU,MAHL;AAIL,YAAM,KAJD;AAKL,gBAAU,QALL;AAML,cAAQ,QANH;AAOL,gBAAU;AAPL,KAbA;AAsBP,WAAO;AAtBA;AAFI,C",
     "file": "../../../src/common/config/db.js",
     "sourcesContent": [
-        "'use strict';\n/**\n * db config\n * @type {Object}\n */\nexport default {\n  type: 'mysql',\n  adapter: {\n    mysql: {\n      host: 'songxiaocai.mysql.rds.aliyuncs.com',\n      port: '3306',\n      database: 'cnpm',\n      user: 'cnpm',\n      password: 'S_x_c_2015',\n      prefix: 'think_',\n      encoding: 'utf8'\n    },\n    mongo: {\n\n    }\n  }\n};\n"
+        "'use strict';\n/**\n * db config\n * @type {Object}\n */\nexport default {\n  type: 'mysql',\n  adapter: {\n    // mysql: {\n    //   host: 'songxiaocai.mysql.rds.aliyuncs.com',\n    //   port: '3306',\n    //   database: 'cnpm',\n    //   user: 'cnpm',\n    //   password: 'S_x_c_2015',\n    //   prefix: 'think_',\n    //   encoding: 'utf8'\n    // },\n    // mongo: {\n    //\n    // }\n    mysql: {\n      host: '218.244.135.116',\n      port: '3306',\n      database: 'cnpm',\n      user: 'sxc',\n      password: '123456',\n      prefix: 'think_',\n      encoding: 'utf8'\n    },\n    mongo: {\n\n    }\n  }\n};\n"
     ]
 }

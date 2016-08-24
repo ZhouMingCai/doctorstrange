@@ -18,27 +18,25 @@ export default class extends Base {
     return this.display(this.templateFile);
   }
 
-  async mainAction() {
+  async loginAction() {
     let isLogin = await this.isLogin();
-
     if (!isLogin) {
-      let email = this.post('email');
+      let userName = this.post('userName');
       let password = this.post('password');
-
       let validate = revalidate.validate({
-        email: email,
+        userName: userName,
         password: password
       }, {
         properties: {
-          email: {
+          userName: {
             required: true,
-            format: 'email',
+            pattern: /^[A-Za-z0-9]+$/,
             type: 'string',
             description: '用户名错误'
           },
           password: {
             required: true,
-            pattern: /\w{2,10}/,
+            pattern: /^.*[^\s]+.*$/,
             type: 'string',
             description: '密码错误'
           }
@@ -50,32 +48,34 @@ export default class extends Base {
       }
 
       let ip = this.ip();
-      let result = await this.model('admin/user').signin(email, password, ip);
+      let result = await this.model('user').login(userName, password, ip);
 
       if (typeof result === 'string') {
-        return this.fail(result);
+        return this.fail(getMsg(result));
       }
 
       await this.session('userInfo', result);
 
-      if (this.isAjax()) {
-        this.success({
-          status: 'ok'
-        });
-      }
-      else {
-        this.redirect('/');
-      }
+    //   if (this.isAjax()) {
+    //     this.success({
+    //       status: 'ok'
+    //     });
+    //   }
+    //   else {
+        this.redirect('/update/', 302);
+        return;
+    //   }
     }
     else {
-      if (this.isAjax()) {
-        this.success({
-          status: 'ok'
-        });
-      }
-      else {
-        this.redirect('/');
-      }
+    //   if (this.isAjax()) {
+    //     this.success({
+    //       status: 'ok'
+    //     });
+    //   }
+    //   else {
+        console.log('isLogin');
+        this.redirect('/update/');
+    //   }
     }
   }
 
@@ -95,14 +95,24 @@ export default class extends Base {
       }
     }
     else {
-      if (this.isAjax()) {
-        this.success({
-          status: 'ok'
-        })
-      }
-      else {
+    //   if (this.isAjax()) {
+    //     this.success({
+    //       status: 'ok'
+    //     })
+    //   }
+    //   else {
         this.redirect('/');
-      }
+    //   }
     }
+  }
+
+
+  getMsg(msg){
+      switch (msg) {
+        case 'USER_NOT_EXIST]':
+            return '用户不存在!';
+        case 'PASSWORD_ERROR':
+            return '用户名或密码错误!';
+      }
   }
 }

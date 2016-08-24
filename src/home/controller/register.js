@@ -8,11 +8,33 @@ export default class extends Base {
    * @return {Promise} []
    */
   async indexAction() {
-    //auto render template file index_index.html
-    return this.display(this.templateFile);
+      let username = this.post('userName');
+      let password = this.post('password');
+      let email = this.post('email');
+      let phone = this.post('phone');
+      let ip = this.http.ip();
+      console.log(ip);
+      console.log(username);
+      let userModal = this.model('user');
+
+      let status = await userModal.addUser({
+        userName: username,
+        email: email,
+        password: password,
+        phone: phone,
+      }, ip);
+
+      if (status.type == 'exist') {
+        return this.fail('用户已存在');
+      }
+      else if (status.type !== 'add') {
+        return this.fail('ACCOUNT_ERROR');
+      }
+
+      return this.success(status);
   }
 
-  async mainAction () {
+  async addAction () {
     let username = this.post('username');
     let password = this.post('password');
     let email = this.post('email');
@@ -26,7 +48,7 @@ export default class extends Base {
       password: password,
       type: 0
     }, ip);
-
+    console.log(status);
     if (status.type == 'exist') {
       return this.fail('USER_EXIST');
     }

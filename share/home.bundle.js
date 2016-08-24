@@ -101,7 +101,7 @@ module.exports =
 	    indexRoute: {
 	        component: _Home2.default // 首页的组件入口
 	    },
-	    childRoutes: [__webpack_require__(100), __webpack_require__(118), __webpack_require__(121)]
+	    childRoutes: [__webpack_require__(100), __webpack_require__(120), __webpack_require__(123)]
 	};
 
 /***/ },
@@ -12615,7 +12615,7 @@ module.exports =
 	module.exports = {
 	  path: 'loginOrSiginUp/:tabValue',
 	  getComponent: function getComponent(nextState, cb) {
-	    __webpack_require__.e/* nsure */(1, function (require) {
+	    __webpack_require__.e/* nsure */(1/* empty */, function (require) {
 	      cb(null, __webpack_require__(101));
 	    });
 	  }
@@ -12639,7 +12639,9 @@ module.exports =
 /* 115 */,
 /* 116 */,
 /* 117 */,
-/* 118 */
+/* 118 */,
+/* 119 */,
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12648,15 +12650,15 @@ module.exports =
 	  path: 'about',
 	  getComponent: function getComponent(nextState, cb) {
 	    __webpack_require__.e/* nsure */(2, function (require) {
-	      cb(null, __webpack_require__(119));
+	      cb(null, __webpack_require__(121));
 	    });
 	  }
 	};
 
 /***/ },
-/* 119 */,
-/* 120 */,
-/* 121 */
+/* 121 */,
+/* 122 */,
+/* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12665,7 +12667,7 @@ module.exports =
 	  path: 'help',
 	  getComponent: function getComponent(nextState, cb) {
 	    __webpack_require__.e/* nsure */(3, function (require) {
-	      cb(null, __webpack_require__(122));
+	      cb(null, __webpack_require__(124));
 	    });
 	  }
 	};

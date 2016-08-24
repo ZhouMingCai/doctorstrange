@@ -49,7 +49,7 @@ module.exports = [{
     ]
   },
   plugins: [
-    // new webpack.optimize.UglifyJsPlugin()
+    // new webpack.optimize.UglifyJsPlugin(),
     new BrowserSyncPlugin({
       // browse to http://localhost:3000/ during development,
       // ./public directory is being served

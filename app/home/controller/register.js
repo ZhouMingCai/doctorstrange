@@ -42,13 +42,50 @@ var _class = function (_Base) {
    */
   _class.prototype.indexAction = function () {
     var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
+      var username, password, email, phone, ip, userModal, status;
       return _regenerator2.default.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              return _context.abrupt('return', this.display(this.templateFile));
+              username = this.post('userName');
+              password = this.post('password');
+              email = this.post('email');
+              phone = this.post('phone');
+              ip = this.http.ip();
 
-            case 1:
+              console.log(ip);
+              console.log(username);
+              userModal = this.model('user');
+              _context.next = 10;
+              return userModal.addUser({
+                userName: username,
+                email: email,
+                password: password,
+                phone: phone
+              }, ip);
+
+            case 10:
+              status = _context.sent;
+
+              if (!(status.type == 'exist')) {
+                _context.next = 15;
+                break;
+              }
+
+              return _context.abrupt('return', this.fail('用户已存在'));
+
+            case 15:
+              if (!(status.type !== 'add')) {
+                _context.next = 17;
+                break;
+              }
+
+              return _context.abrupt('return', this.fail('ACCOUNT_ERROR'));
+
+            case 17:
+              return _context.abrupt('return', this.success(status));
+
+            case 18:
             case 'end':
               return _context.stop();
           }
@@ -63,7 +100,7 @@ var _class = function (_Base) {
     return indexAction;
   }();
 
-  _class.prototype.mainAction = function () {
+  _class.prototype.addAction = function () {
     var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
       var username, password, email, ip, userModal, status;
       return _regenerator2.default.wrap(function _callee2$(_context2) {
@@ -86,25 +123,27 @@ var _class = function (_Base) {
             case 7:
               status = _context2.sent;
 
+              console.log(status);
+
               if (!(status.type == 'exist')) {
-                _context2.next = 12;
+                _context2.next = 13;
                 break;
               }
 
               return _context2.abrupt('return', this.fail('USER_EXIST'));
 
-            case 12:
+            case 13:
               if (!(status.type !== 'add')) {
-                _context2.next = 14;
+                _context2.next = 15;
                 break;
               }
 
               return _context2.abrupt('return', this.fail('ACCOUNT_ERROR'));
 
-            case 14:
+            case 15:
               return _context2.abrupt('return', this.success(status));
 
-            case 15:
+            case 16:
             case 'end':
               return _context2.stop();
           }
@@ -112,11 +151,11 @@ var _class = function (_Base) {
       }, _callee2, this);
     }));
 
-    function mainAction() {
+    function addAction() {
       return _ref2.apply(this, arguments);
     }
 
-    return mainAction;
+    return addAction;
   }();
 
   return _class;

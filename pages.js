@@ -3,10 +3,15 @@ var _ = require('lodash');
 
 
 var pages = {
-  home: {
-    client: path.join(__dirname, './www/view/home/client'),
-    server: path.join(__dirname, './www/view/home/server')
-  }
+    home: {
+        client: path.join(__dirname, './front/view/home/client'),
+        server: path.join(__dirname, './front/view/home/server')
+    },
+    update: {
+        client: path.join(__dirname, './front/view/update/client'),
+        server: path.join(__dirname, './front/view/update/server')
+    }
+
 };
 
 exports.getClient = function () {

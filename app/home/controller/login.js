@@ -82,9 +82,9 @@ var _class = function (_Base) {
     return indexAction;
   }();
 
-  _class.prototype.mainAction = function () {
+  _class.prototype.loginAction = function () {
     var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
-      var isLogin, email, password, validate, ip, result;
+      var isLogin, userName, password, validate, ip, result;
       return _regenerator2.default.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -96,26 +96,26 @@ var _class = function (_Base) {
               isLogin = _context2.sent;
 
               if (isLogin) {
-                _context2.next = 20;
+                _context2.next = 21;
                 break;
               }
 
-              email = this.post('email');
+              userName = this.post('userName');
               password = this.post('password');
               validate = _revalidator2.default.validate({
-                email: email,
+                userName: userName,
                 password: password
               }, {
                 properties: {
-                  email: {
+                  userName: {
                     required: true,
-                    format: 'email',
+                    pattern: /^[A-Za-z0-9]+$/,
                     type: 'string',
                     description: '用户名错误'
                   },
                   password: {
                     required: true,
-                    pattern: /\w{2,10}/,
+                    pattern: /^.*[^\s]+.*$/,
                     type: 'string',
                     description: '密码错误'
                   }
@@ -132,7 +132,7 @@ var _class = function (_Base) {
             case 9:
               ip = this.ip();
               _context2.next = 12;
-              return this.model('admin/user').signin(email, password, ip);
+              return this.model('user').login(userName, password, ip);
 
             case 12:
               result = _context2.sent;
@@ -142,7 +142,7 @@ var _class = function (_Base) {
                 break;
               }
 
-              return _context2.abrupt('return', this.fail(result));
+              return _context2.abrupt('return', this.fail(getMsg(result)));
 
             case 15:
               _context2.next = 17;
@@ -150,26 +150,27 @@ var _class = function (_Base) {
 
             case 17:
 
-              if (this.isAjax()) {
-                this.success({
-                  status: 'ok'
-                });
-              } else {
-                this.redirect('/');
-              }
-              _context2.next = 21;
-              break;
-
-            case 20:
-              if (this.isAjax()) {
-                this.success({
-                  status: 'ok'
-                });
-              } else {
-                this.redirect('/');
-              }
+              //   if (this.isAjax()) {
+              //     this.success({
+              //       status: 'ok'
+              //     });
+              //   }
+              //   else {
+              this.redirect('/update/', 302);
+              return _context2.abrupt('return');
 
             case 21:
+              //   if (this.isAjax()) {
+              //     this.success({
+              //       status: 'ok'
+              //     });
+              //   }
+              //   else {
+              console.log('isLogin');
+              this.redirect('/update/');
+              //   }
+
+            case 23:
             case 'end':
               return _context2.stop();
           }
@@ -177,11 +178,11 @@ var _class = function (_Base) {
       }, _callee2, this);
     }));
 
-    function mainAction() {
+    function loginAction() {
       return _ref2.apply(this, arguments);
     }
 
-    return mainAction;
+    return loginAction;
   }();
 
   _class.prototype.logoutAction = function () {
@@ -218,13 +219,14 @@ var _class = function (_Base) {
               break;
 
             case 9:
-              if (this.isAjax()) {
-                this.success({
-                  status: 'ok'
-                });
-              } else {
-                this.redirect('/');
-              }
+              //   if (this.isAjax()) {
+              //     this.success({
+              //       status: 'ok'
+              //     })
+              //   }
+              //   else {
+              this.redirect('/');
+              //   }
 
             case 10:
             case 'end':
@@ -240,6 +242,15 @@ var _class = function (_Base) {
 
     return logoutAction;
   }();
+
+  _class.prototype.getMsg = function getMsg(msg) {
+    switch (msg) {
+      case 'USER_NOT_EXIST]':
+        return '用户不存在!';
+      case 'PASSWORD_ERROR':
+        return '用户名或密码错误!';
+    }
+  };
 
   return _class;
 }(_base2.default);
