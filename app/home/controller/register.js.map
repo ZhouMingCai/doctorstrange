@@ -1,0 +1,12 @@
+{
+    "version": 3,
+    "sources": [
+        "../../../src/home/controller/register.js"
+    ],
+    "names": [],
+    "mappings": "AAAA;;;;;;;;;;;;;;;;;;;;;;;;AAEA;;;;;;;;;;;;;;AAGE;;;;mBAIM,W;;;;;;+CAEG,KAAK,OAAL,CAAa,KAAK,YAAlB,C;;;;;;;;;;;;;;;;;mBAGH,U;;;;;;;AACA,sB,GAAW,KAAK,IAAL,CAAU,UAAV,C;AACX,sB,GAAW,KAAK,IAAL,CAAU,UAAV,C;AACX,mB,GAAQ,KAAK,IAAL,CAAU,OAAV,C;AACR,gB,GAAK,KAAK,IAAL,CAAU,EAAV,E;AAEL,uB,GAAY,KAAK,KAAL,CAAW,YAAX,C;;qBAEG,UAAU,OAAV,CAAkB;AACnC,0BAAU,QADyB;AAEnC,uBAAO,KAF4B;AAGnC,0BAAU,QAHyB;AAInC,sBAAM;AAJ6B,eAAlB,EAKhB,EALgB,C;;;AAAf,oB;;oBAOA,OAAO,IAAP,IAAe,O;;;;;gDACV,KAAK,IAAL,CAAU,YAAV,C;;;oBAEA,OAAO,IAAP,KAAgB,K;;;;;gDAChB,KAAK,IAAL,CAAU,eAAV,C;;;gDAGF,KAAK,OAAL,CAAa,MAAb,C",
+    "file": "../../../src/home/controller/register.js",
+    "sourcesContent": [
+        "'use strict';\n\nimport Base from './base.js';\n\nexport default class extends Base {\n  /**\n   * index action\n   * @return {Promise} []\n   */\n  async indexAction() {\n    //auto render template file index_index.html\n    return this.display(this.templateFile);\n  }\n\n  async mainAction () {\n    let username = this.post('username');\n    let password = this.post('password');\n    let email = this.post('email');\n    let ip = this.http.ip();\n\n    let userModal = this.model('admin/user');\n\n    let status = await userModal.addUser({\n      username: username,\n      email: email,\n      password: password,\n      type: 0\n    }, ip);\n\n    if (status.type == 'exist') {\n      return this.fail('USER_EXIST');\n    }\n    else if (status.type !== 'add') {\n      return this.fail('ACCOUNT_ERROR');\n    }\n\n    return this.success(status);\n  }\n}\n"
+    ]
+}

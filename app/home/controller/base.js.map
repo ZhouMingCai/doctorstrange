@@ -1,0 +1,12 @@
+{
+    "version": 3,
+    "sources": [
+        "../../../src/home/controller/base.js"
+    ],
+    "names": [],
+    "mappings": "AAAA;;;;;;;;;;;;;;;;;;;;;;;;;;;;AACA;;;;;;;;;;;;;;AAGE;;;;mBAIO,Q;;;;;;;;;AACF,mBAAK,eAAL,GAAuB,EAAvB;AACA,mBAAK,YAAL,GAAoB,eAAK,IAAL,CAAU,SAAV,EAAqB,qCAArB,CAApB;;qBACoB,KAAK,OAAL,E;;;AAAhB,qB;;qBACc,KAAK,OAAL,CAAa,eAAb,C;;;AAAd,mB;;AACJ,mBAAK,eAAL,CAAqB,OAArB,GAA+B,OAA/B;AACA,mBAAK,eAAL,CAAqB,KAArB,GAA6B,KAA7B;;mBAEI,O;;;;;;qBACiB,KAAK,OAAL,CAAa,UAAb,C;;;AAAb,kB;;AACJ,mBAAK,eAAL,CAAqB,QAArB,GAAgC,KAAK,IAArC;;;AAGA,wB,GAAa,KAAK,O;;AACtB,mBAAK,OAAL,GAAe,YAAa;AAAA,kDAAT,IAAS;AAAT,sBAAS;AAAA;;AAE1B,uBAAK,MAAL,CAAY,iBAAZ,EAA+B,mBAAmB,yBAAe,OAAK,eAApB,CAAnB,CAA/B;AACA,2BAAW,KAAX,SAAuB,IAAvB;AACD,eAJD;;;;;;;;;;;;;;;;;mBAQE,O;;;;;;;;qBACa,KAAK,OAAL,CAAa,UAAb,C;;;;;;;;;;6BAA4B,E;;;AAAzC,kB;gDACG,CAAC,MAAM,OAAN,CAAc,IAAd,C;;;;;;;;;;;;;;;;;;EA7BgB,MAAM,UAAN,CAAiB,I",
+    "file": "../../../src/home/controller/base.js",
+    "sourcesContent": [
+        "'use strict';\nimport path from 'path'\n\nexport default class extends think.controller.base {\n  /**\n   * some base method in here\n   */\n\n   async __before() {\n       this.__CLIENT_DATA__ = {};\n       this.templateFile = path.join(__dirname, '../../../view/home/index_index.html');\n       let isLogin = await this.isLogin();\n       let token = await this.session('__HOTUPDATE__');\n       this.__CLIENT_DATA__.isLogin = isLogin;\n       this.__CLIENT_DATA__.token = token;\n\n       if (isLogin) {\n           let user = await this.session('userInfo');\n           this.__CLIENT_DATA__.username = user.name;\n       }\n\n       let oldDisplay = this.display;\n       this.display = (...args) => {\n\n         this.assign('__CLIENT_DATA__', encodeURIComponent(JSON.stringify(this.__CLIENT_DATA__)));\n         oldDisplay.apply(this, args);\n       }\n   }\n\n\n   async isLogin() {\n     let user = await this.session('userInfo') || {};\n     return !think.isEmpty(user);\n   }\n}\n"
+    ]
+}
