@@ -1,5 +1,8 @@
 
-Application created by [ThinkJS](http://www.thinkjs.org)
+# hot-update
+update
+
+Application created by CJH
 
 ## Install dependencies
 
@@ -20,3 +23,4 @@ Use pm2 to deploy app on production enviroment.
 ```
 pm2 startOrReload pm2.json
 ```
+
