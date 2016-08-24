@@ -11,7 +11,7 @@ module.exports = {
     filename: "[name].bundle.js",
     libraryTarget: "commonjs2",
     chunkFilename: '[name].[id].bundle.js',
-    publicPath: '/static/js/'
+    publicPath: '/static/dist/'
   },
   target: 'node',
   externals: /^[a-z\-0-9\/]+$/,

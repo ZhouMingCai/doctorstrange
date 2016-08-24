@@ -1,2 +1,4 @@
-
+share/*
+www/static/dist/*
+runtime/*
 node_modules/*

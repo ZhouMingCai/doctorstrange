@@ -10,9 +10,9 @@ module.exports = [{
   name: 'client side render',
   entry: clients,
   output: {
-    path: path.join(__dirname, 'www', 'static/js'),
+    path: path.join(__dirname, 'www', 'static/dist'),
     filename: "[name].bundle.js",
-    publicPath: '/static/js/'
+    publicPath: '/static/dist/'
   },
   progress: true,
   module: {

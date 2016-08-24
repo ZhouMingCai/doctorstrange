@@ -12,7 +12,7 @@ exports.modules = {
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _about = __webpack_require__(122);
+	var _about = __webpack_require__(120);
 
 	var _about2 = _interopRequireDefault(_about);
 
@@ -57,7 +57,7 @@ exports.modules = {
 
 /***/ },
 
-/***/ 122:
+/***/ 120:
 /***/ function(module, exports) {
 
 	'use strict';
