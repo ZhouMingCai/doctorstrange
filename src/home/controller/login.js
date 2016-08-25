@@ -55,27 +55,14 @@ export default class extends Base {
       }
 
       await this.session('userInfo', result);
-
-    //   if (this.isAjax()) {
-    //     this.success({
-    //       status: 'ok'
-    //     });
-    //   }
-    //   else {
-        this.redirect('/update/', 302);
-        return;
-    //   }
+        this.success({
+          status: 'ok'
+        });
     }
     else {
-    //   if (this.isAjax()) {
-    //     this.success({
-    //       status: 'ok'
-    //     });
-    //   }
-    //   else {
-        console.log('isLogin');
-        this.redirect('/update/');
-    //   }
+        this.success({
+          status: 'ok'
+        });
     }
   }
 

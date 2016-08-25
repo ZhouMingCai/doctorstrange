@@ -8,6 +8,9 @@ import {green800, green500, green600, green900} from 'material-ui/styles/colors'
 import RaisedButton from 'material-ui/RaisedButton';
 import {TextField} from '../../../../../components';
 import {request} from '../../../../../tools';
+import { Router, hashHistory, IndexRoute, browserHistory} from 'react-router';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 
 module.exports = class LoginSignUp extends Component {
     constructor(props){
@@ -20,7 +23,8 @@ module.exports = class LoginSignUp extends Component {
             phone: '', //联系电话
             comfirmPass: '',//确认密码
             errorMsg: '',
-            errorMsgSign: ''
+            errorMsgSign: '',
+            showDialog: false,
         }
         this.timeout = 0;
     }
@@ -74,7 +78,7 @@ module.exports = class LoginSignUp extends Component {
                     password: this.state.password,
                 },
                 (res) => {
-                    console.log('success', res);
+                    location.href = '/update/';
                 },
                 (err) => {
                     console.log(err);
@@ -100,7 +104,15 @@ module.exports = class LoginSignUp extends Component {
                     phone: this.state.phone
                 },
                 (res) => {
-                    alert(res);
+                    console.log(res);
+                    this.setState({
+                        userName: '',
+                        password: '',
+                        email: '',
+                        phone: '',
+                        comfirmPass: '',
+                        showDialog: true,
+                    })
                 },
                 (err) => {
                     console.log(err);
@@ -254,9 +266,39 @@ module.exports = class LoginSignUp extends Component {
                             </div>
                     </Tab>
                 </Tabs>
-
+                {this._renderDialog()}
             </div>
         </div>
       )
+    }
+
+    _signSuccess(){
+        this.setState({
+            selectValue: 'login',
+            showDialog: false
+        });
+    }
+
+    _renderDialog(){
+        let actions = [
+          <FlatButton
+            label='确定'
+            primary={true}
+            keyboardFocused={true}
+            onTouchTap={this._signSuccess.bind(this)}
+          />,
+        ];
+
+        return (
+            <Dialog
+              title='提示'
+              actions={actions}
+              modal={true}
+              open={this.state.showDialog}
+              onRequestClose={this._signSuccess.bind(this)}
+            >
+              注册成功
+            </Dialog>
+        )
     }
 };

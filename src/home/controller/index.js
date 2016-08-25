@@ -7,8 +7,12 @@ export default class extends Base {
    * index action
    * @return {Promise} []
    */
-  indexAction(){
-    //auto render template file index_index.html
-    return this.display();
+  async indexAction(){
+    let isLogin = this.isLogin();
+    if (isLogin) {
+        return this.redirect('/update/')
+    } else {
+        this.display();
+    }
   }
 }

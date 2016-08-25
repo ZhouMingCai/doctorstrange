@@ -4,9 +4,9 @@
         "../../../src/home/controller/index.js"
     ],
     "names": [],
-    "mappings": "AAAA;;;;;;;;;;;;;;;;AAEA;;;;;;;;;;;;;;AAGE;;;;mBAIA,W,0BAAa;AACX;AACA,WAAO,KAAK,OAAL,EAAP;AACD,G",
+    "mappings": "AAAA;;;;;;;;;;;;;;;;;;;;;;;;AAEA;;;;;;;;;;;;;;AAGE;;;;mBAIM,W;;;;;;;AACA,qB,GAAU,KAAK,OAAL,E;;mBACV,O;;;;;+CACO,KAAK,QAAL,CAAc,UAAd,C;;;AAEP,mBAAK,OAAL",
     "file": "../../../src/home/controller/index.js",
     "sourcesContent": [
-        "'use strict';\n\nimport Base from './base.js';\n\nexport default class extends Base {\n  /**\n   * index action\n   * @return {Promise} []\n   */\n  indexAction(){\n    //auto render template file index_index.html\n    return this.display();\n  }\n}"
+        "'use strict';\n\nimport Base from './base.js';\n\nexport default class extends Base {\n  /**\n   * index action\n   * @return {Promise} []\n   */\n  async indexAction(){\n    let isLogin = this.isLogin();\n    if (isLogin) {\n        return this.redirect('/update/')\n    } else {\n        this.display();\n    }\n  }\n}\n"
     ]
 }

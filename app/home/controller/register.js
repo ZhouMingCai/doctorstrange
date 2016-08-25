@@ -52,11 +52,8 @@ var _class = function (_Base) {
               email = this.post('email');
               phone = this.post('phone');
               ip = this.http.ip();
-
-              console.log(ip);
-              console.log(username);
               userModal = this.model('user');
-              _context.next = 10;
+              _context.next = 8;
               return userModal.addUser({
                 userName: username,
                 email: email,
@@ -64,28 +61,28 @@ var _class = function (_Base) {
                 phone: phone
               }, ip);
 
-            case 10:
+            case 8:
               status = _context.sent;
 
               if (!(status.type == 'exist')) {
-                _context.next = 15;
+                _context.next = 13;
                 break;
               }
 
               return _context.abrupt('return', this.fail('用户已存在'));
 
-            case 15:
+            case 13:
               if (!(status.type !== 'add')) {
-                _context.next = 17;
+                _context.next = 15;
                 break;
               }
 
               return _context.abrupt('return', this.fail('ACCOUNT_ERROR'));
 
-            case 17:
+            case 15:
               return _context.abrupt('return', this.success(status));
 
-            case 18:
+            case 16:
             case 'end':
               return _context.stop();
           }
@@ -123,27 +120,25 @@ var _class = function (_Base) {
             case 7:
               status = _context2.sent;
 
-              console.log(status);
-
               if (!(status.type == 'exist')) {
-                _context2.next = 13;
+                _context2.next = 12;
                 break;
               }
 
               return _context2.abrupt('return', this.fail('USER_EXIST'));
 
-            case 13:
+            case 12:
               if (!(status.type !== 'add')) {
-                _context2.next = 15;
+                _context2.next = 14;
                 break;
               }
 
               return _context2.abrupt('return', this.fail('ACCOUNT_ERROR'));
 
-            case 15:
+            case 14:
               return _context2.abrupt('return', this.success(status));
 
-            case 16:
+            case 15:
             case 'end':
               return _context2.stop();
           }

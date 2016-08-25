@@ -9,6 +9,7 @@ module.exports = (url, params, success, error) => {
         headers: createHeaders(),
         body: JSON.stringify(params),
         redirect: 'follow',
+        credentials: 'include'
     })
     .then(status)
     .then(json)
@@ -39,7 +40,6 @@ module.exports = (url, params, success, error) => {
     } else if(response.status == 404) {
         console.log('not found');
     }
-    response.redirect();
     return response;
 }
 //json转换

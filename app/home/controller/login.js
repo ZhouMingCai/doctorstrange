@@ -96,7 +96,7 @@ var _class = function (_Base) {
               isLogin = _context2.sent;
 
               if (isLogin) {
-                _context2.next = 21;
+                _context2.next = 20;
                 break;
               }
 
@@ -149,28 +149,18 @@ var _class = function (_Base) {
               return this.session('userInfo', result);
 
             case 17:
+              this.success({
+                status: 'ok'
+              });
+              _context2.next = 21;
+              break;
 
-              //   if (this.isAjax()) {
-              //     this.success({
-              //       status: 'ok'
-              //     });
-              //   }
-              //   else {
-              this.redirect('/update/', 302);
-              return _context2.abrupt('return');
+            case 20:
+              this.success({
+                status: 'ok'
+              });
 
             case 21:
-              //   if (this.isAjax()) {
-              //     this.success({
-              //       status: 'ok'
-              //     });
-              //   }
-              //   else {
-              console.log('isLogin');
-              this.redirect('/update/');
-              //   }
-
-            case 23:
             case 'end':
               return _context2.stop();
           }

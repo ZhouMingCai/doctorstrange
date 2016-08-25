@@ -1,4 +1,5 @@
 var path = require('path');
+var webpack = require('webpack');
 
 var servers = require('./pages').getServer();
 
@@ -41,6 +42,13 @@ module.exports = {
     ]
   },
   plugins: [
-    // new webpack.optimize.UglifyJsPlugin()
+      new webpack.ProvidePlugin({
+       $: "jquery",
+       jQuery: "jquery",
+       "window.jQuery": "jquery"
+      }),
+      new webpack.optimize.UglifyJsPlugin({
+       minimize: true
+      }),
   ]
 }

@@ -13,8 +13,7 @@ export default class extends Base {
       let email = this.post('email');
       let phone = this.post('phone');
       let ip = this.http.ip();
-      console.log(ip);
-      console.log(username);
+
       let userModal = this.model('user');
 
       let status = await userModal.addUser({
@@ -48,7 +47,6 @@ export default class extends Base {
       password: password,
       type: 0
     }, ip);
-    console.log(status);
     if (status.type == 'exist') {
       return this.fail('USER_EXIST');
     }

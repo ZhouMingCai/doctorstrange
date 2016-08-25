@@ -1,6 +1,6 @@
 
 import React, {Component} from 'react';
-import {deepOrange500} from 'material-ui/styles/colors';
+import {deepOrange500, green700} from 'material-ui/styles/colors';
 import FlatButton from 'material-ui/FlatButton';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -12,35 +12,15 @@ import ContentFilter from 'material-ui/svg-icons/content/filter-list';
 import {Router, Route, Link, IndexLink} from 'react-router'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import Home from './Home';
-
-const dark = 'hsl(200, 20%, 20%)'
-const light = '#fff'
-const styles = {
-  container: {
-    textAlign: 'center',
-    paddingTop: 10,
-    justifyContent: 'flex-start'
-  },
-  link: {
-      padding: 11,
-      color: dark,
-      fontWeight: 200,
-      textDecoration: 'none'
-  },
-  activeLink: {
-      padding: 11,
-      fontWeight: 200,
-      background: light,
-      color: '#FF5722',
-      textDecoration: 'none'
-  }
-};
-
+import s from './app.style';
 
 const muiTheme = getMuiTheme({
   palette: {
     accent1Color: deepOrange500,
   },
+  appBar: {
+      color: green700
+  }
 });
 
 module.exports = class App extends Component {
@@ -102,13 +82,13 @@ module.exports = class App extends Component {
              }}
            >
              <MenuItem value='1'>
-                 <IndexLink to='/' style={styles.link} activeStyle={styles.activeLink}>首页</IndexLink>
+                 <IndexLink to='/' style={s.link} activeStyle={s.activeLink}>首页</IndexLink>
              </MenuItem>
              <MenuItem value='2'>
-                 <Link to='appList' style={styles.link} activeStyle={styles.activeLink} >应用列表</Link>
+                 <Link to='appList' style={s.link} activeStyle={s.activeLink} >应用列表</Link>
              </MenuItem>
              <MenuItem value='3' >
-                 <Link to='addApp' style={styles.link} activeStyle={styles.activeLink} >添加应用</Link>
+                 <Link to='addApp' style={s.link} activeStyle={s.activeLink} >添加应用</Link>
              </MenuItem>
            </IconMenu>
       )
@@ -118,7 +98,7 @@ module.exports = class App extends Component {
   render() {
     return (
         <MuiThemeProvider muiTheme={muiTheme}>
-          <div style={styles.container}>
+          <div style={s.container}>
               <AppBar
                   title={this.state.title}
                   iconClassNameRight='muidocs-icon-navigation-expand-more'
