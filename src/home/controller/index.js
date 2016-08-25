@@ -8,7 +8,7 @@ export default class extends Base {
    * @return {Promise} []
    */
   async indexAction(){
-    let isLogin = this.isLogin();
+    let isLogin = await this.isLogin();
     if (isLogin) {
         return this.redirect('/update/')
     } else {

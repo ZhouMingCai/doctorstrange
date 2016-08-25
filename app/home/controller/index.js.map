@@ -3,10 +3,15 @@
     "sources": [
         "../../../src/home/controller/index.js"
     ],
-    "names": [],
-    "mappings": "AAAA;;;;;;;;;;;;;;;;;;;;;;;;AAEA;;;;;;;;;;;;;;AAGE;;;;mBAIM,W;;;;;;;AACA,qB,GAAU,KAAK,OAAL,E;;mBACV,O;;;;;+CACO,KAAK,QAAL,CAAc,UAAd,C;;;AAEP,mBAAK,OAAL",
+    "names": [
+        "indexAction",
+        "isLogin",
+        "redirect",
+        "display"
+    ],
+    "mappings": "AAAA;;;;;;;;;;;;;;;;;;;;;;;;AAEA;;;;;;;;;;;;;;AAGE;;;;mBAIMA,W;;;;;;;;qBACgB,KAAKC,OAAL,E;;;AAAhBA,qB;;mBACAA,O;;;;;+CACO,KAAKC,QAAL,CAAc,UAAd,C;;;AAEP,mBAAKC,OAAL",
     "file": "../../../src/home/controller/index.js",
     "sourcesContent": [
-        "'use strict';\n\nimport Base from './base.js';\n\nexport default class extends Base {\n  /**\n   * index action\n   * @return {Promise} []\n   */\n  async indexAction(){\n    let isLogin = this.isLogin();\n    if (isLogin) {\n        return this.redirect('/update/')\n    } else {\n        this.display();\n    }\n  }\n}\n"
+        "'use strict';\n\nimport Base from './base.js';\n\nexport default class extends Base {\n  /**\n   * index action\n   * @return {Promise} []\n   */\n  async indexAction(){\n    let isLogin = await this.isLogin();\n    if (isLogin) {\n        return this.redirect('/update/')\n    } else {\n        this.display();\n    }\n  }\n}\n"
     ]
 }

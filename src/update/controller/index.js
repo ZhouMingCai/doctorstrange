@@ -8,9 +8,12 @@ export default class extends Base {
    * @return {Promise} []
    */
   async indexAction(){
-    //auto render template file index_index.html
-    return this.display();
-    // await this.session('kkk', 'ddd')
-    // this.redirect('/home/')
+    let isLogin = await this.isLogin();
+
+    if (isLogin) {
+      return this.display();
+    } else {
+      return this.redirect('/');
+    }
   }
 }

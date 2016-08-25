@@ -3,8 +3,11 @@
     "sources": [
         "../../../src/common/config/config.js"
     ],
-    "names": [],
-    "mappings": "AAAA;AACA;;;;;kBAGe;AACb;AACE,eAAa,IAFF;AAGX,gBAAc;AAHH,C",
+    "names": [
+        "resource_on",
+        "resource_reg"
+    ],
+    "mappings": "AAAA;AACA;;;;;kBAGe;AACb;AACEA,eAAa,IAFF;AAGXC,gBAAc;AAHH,C",
     "file": "../../../src/common/config/config.js",
     "sourcesContent": [
         "'use strict';\n/**\n * config\n */\nexport default {\n  //key: value\n    resource_on: true,\n    resource_reg: /^(static\\/|[^\\/]+\\.(?!js|html)\\w+$)/,\n};\n"

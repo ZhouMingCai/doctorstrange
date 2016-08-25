@@ -3,8 +3,12 @@
     "sources": [
         "../../../src/update/model/version.js"
     ],
-    "names": [],
-    "mappings": "AAAA;;;;;;;;;;;;;;;;;;;;;;;;;;;EAE6B,MAAM,KAAN,CAAY,I",
+    "names": [
+        "think",
+        "model",
+        "base"
+    ],
+    "mappings": "AAAA;;;;;;;;;;;;;;;;;;;;;;;;;;;EAE6BA,MAAMC,KAAN,CAAYC,I",
     "file": "../../../src/update/model/version.js",
     "sourcesContent": [
         "'use strict'\n\nexport default class extends think.model.base {\n\n}\n"

@@ -3,10 +3,18 @@
     "sources": [
         "../../../src/update/controller/base.js"
     ],
-    "names": [],
-    "mappings": "AAAA;;;;;;;;;;;;;;;;;;;;;;;;;;;EAE6B,MAAM,UAAN,CAAiB,I",
+    "names": [
+        "isLogin",
+        "session",
+        "user",
+        "think",
+        "isEmpty",
+        "controller",
+        "base"
+    ],
+    "mappings": "AAAA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAGE;;;;mBAIOA,O;;;;;;;;qBACa,KAAKC,OAAL,CAAa,UAAb,C;;;;;;;;;;4BAA4B,E;;;AAAzCC,kB;+CACG,CAACC,MAAMC,OAAN,CAAcF,IAAd,C;;;;;;;;;;;;;;;;;;EAPgBC,MAAME,UAAN,CAAiBC,I",
     "file": "../../../src/update/controller/base.js",
     "sourcesContent": [
-        "'use strict';\n\nexport default class extends think.controller.base {\n  /**\n   * some base method in here\n   */\n}"
+        "'use strict';\n\nexport default class extends think.controller.base {\n  /**\n   * some base method in here\n   */\n\n   async isLogin() {\n     let user = await this.session('userInfo') || {};\n     return !think.isEmpty(user);\n   }\n}\n"
     ]
 }

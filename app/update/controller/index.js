@@ -42,13 +42,28 @@ var _class = function (_Base) {
    */
   _class.prototype.indexAction = function () {
     var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
+      var isLogin;
       return _regenerator2.default.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
+              _context.next = 2;
+              return this.isLogin();
+
+            case 2:
+              isLogin = _context.sent;
+
+              if (!isLogin) {
+                _context.next = 7;
+                break;
+              }
+
               return _context.abrupt('return', this.display());
 
-            case 1:
+            case 7:
+              return _context.abrupt('return', this.redirect('/'));
+
+            case 8:
             case 'end':
               return _context.stop();
           }

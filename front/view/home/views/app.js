@@ -12,7 +12,7 @@ import IconButton from 'material-ui/IconButton/IconButton';
 import ContentFilter from 'material-ui/svg-icons/content/filter-list';
 import {Router, Route, Link, IndexLink} from 'react-router'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
-import Home from './Home';
+import Home from './home';
 import s from './app.style';
 
 

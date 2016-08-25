@@ -3,10 +3,15 @@
     "sources": [
         "../../../src/update/controller/index.js"
     ],
-    "names": [],
-    "mappings": "AAAA;;;;;;;;;;;;;;;;;;;;;;;;AAEA;;;;;;;;;;;;;;AAGE;;;;mBAIM,W;;;;;;+CAEG,KAAK,OAAL,E",
+    "names": [
+        "indexAction",
+        "isLogin",
+        "display",
+        "redirect"
+    ],
+    "mappings": "AAAA;;;;;;;;;;;;;;;;;;;;;;;;AAEA;;;;;;;;;;;;;;AAGE;;;;mBAIMA,W;;;;;;;;qBACgB,KAAKC,OAAL,E;;;AAAhBA,qB;;mBAEAA,O;;;;;+CACK,KAAKC,OAAL,E;;;+CAEA,KAAKC,QAAL,CAAc,GAAd,C",
     "file": "../../../src/update/controller/index.js",
     "sourcesContent": [
-        "'use strict';\n\nimport Base from './base.js';\n\nexport default class extends Base {\n  /**\n   * index action\n   * @return {Promise} []\n   */\n  async indexAction(){\n    //auto render template file index_index.html\n    return this.display();\n    // await this.session('kkk', 'ddd')\n    // this.redirect('/home/')\n  }\n}\n"
+        "'use strict';\n\nimport Base from './base.js';\n\nexport default class extends Base {\n  /**\n   * index action\n   * @return {Promise} []\n   */\n  async indexAction(){\n    let isLogin = await this.isLogin();\n\n    if (isLogin) {\n      return this.display();\n    } else {\n      return this.redirect('/');\n    }\n  }\n}\n"
     ]
 }

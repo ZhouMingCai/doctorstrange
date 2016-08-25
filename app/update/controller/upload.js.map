@@ -3,8 +3,27 @@
     "sources": [
         "../../../src/update/controller/upload.js"
     ],
-    "names": [],
-    "mappings": "AAAA;;;;;;;;;;;;;;;;;;;;;;;;AAEA;;;;AACA;;;;AACA;;;;;;;;;;;;;;qBAIQ,W;;;;;;AACF,iCAAK,OAAL;;;;;;;;;;;;;;;;;qBAGE,gB;;;;;;;AACF;AACE,gC,GAAO,KAAK,IAAL,CAAU,QAAV,C;AACP,oC,GAAW,KAAK,I;AACpB;;AACI,sC,GAAa,MAAM,aAAN,GAAsB,S;;AACvC,kCAAM,KAAN,CAAY,UAAZ;AACI,oC,GAAW,KAAK,S;;AACpB,yCAAG,UAAH,CAAc,QAAd,EAAwB,aAAa,GAAb,GAAmB,QAA3C;;AAEA,iCAAK,IAAL,GAAY,aAAa,GAAb,GAAmB,QAA/B;;AAEA,gCAAG,MAAM,MAAN,CAAa,KAAK,IAAlB,CAAH,EAA2B;AACvB,qCAAK,OAAL,CAAa;AACT,0CAAM;AADG,iCAAb;AAGH,6BAJD,MAIK;AACD,qCAAK,IAAL,CAAU;AACN,4CAAQ;AADF,iCAAV;AAGH",
+    "names": [
+        "indexAction",
+        "display",
+        "uploadfileAction",
+        "file",
+        "filepath",
+        "path",
+        "uploadPath",
+        "think",
+        "RESOURCE_PATH",
+        "mkdir",
+        "basename",
+        "fieldName",
+        "renameSync",
+        "isFile",
+        "success",
+        "name",
+        "fail",
+        "errmsg"
+    ],
+    "mappings": "AAAA;;;;;;;;;;;;;;;;;;;;;;;;AAEA;;;;AACA;;;;AACA;;;;;;;;;;;;;;qBAIQA,W;;;;;;AACF,iCAAKC,OAAL;;;;;;;;;;;;;;;;;qBAGEC,gB;;;;;;;AACF;AACEC,gC,GAAO,KAAKA,IAAL,CAAU,QAAV,C;AACPC,oC,GAAWD,KAAKE,I;AACpB;;AACIC,sC,GAAaC,MAAMC,aAAN,GAAsB,S;;AACvCD,kCAAME,KAAN,CAAYH,UAAZ;AACII,oC,GAAWP,KAAKQ,S;;AACpB,yCAAGC,UAAH,CAAcR,QAAd,EAAwBE,aAAa,GAAb,GAAmBI,QAA3C;;AAEAP,iCAAKE,IAAL,GAAYC,aAAa,GAAb,GAAmBI,QAA/B;;AAEA,gCAAGH,MAAMM,MAAN,CAAaV,KAAKE,IAAlB,CAAH,EAA2B;AACvB,qCAAKS,OAAL,CAAa;AACTC,0CAAML;AADG,iCAAb;AAGH,6BAJD,MAIK;AACD,qCAAKM,IAAL,CAAU;AACNC,4CAAQ;AADF,iCAAV;AAGH",
     "file": "../../../src/update/controller/upload.js",
     "sourcesContent": [
         "'use strict';\n\nimport Base from './base.js';\nimport fs from 'fs';\nimport path from 'path';\n\nexport default class extends Base {\n\n  async indexAction(){\n      this.display()\n  }\n\n  async uploadfileAction(){\n      //这里的 key 需要和 form 表单里的 name 值保持一致\n    var file = this.file('bundle');\n    var filepath = file.path;\n    //文件上传后，需要将文件移动到项目其他地方，否则会在请求结束时删除掉该文件\n    var uploadPath = think.RESOURCE_PATH + '/bundle';\n    think.mkdir(uploadPath);\n    var basename = file.fieldName;\n    fs.renameSync(filepath, uploadPath + '/' + basename);\n\n    file.path = uploadPath + '/' + basename;\n\n    if(think.isFile(file.path)){\n        this.success({\n            name: basename\n        });\n    }else{\n        this.fail({\n            errmsg: '上传失败!'\n        })\n    }\n\n\n  }\n\n}\n"

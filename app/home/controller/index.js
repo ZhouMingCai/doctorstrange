@@ -47,19 +47,23 @@ var _class = function (_Base) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              isLogin = this.isLogin();
+              _context.next = 2;
+              return this.isLogin();
+
+            case 2:
+              isLogin = _context.sent;
 
               if (!isLogin) {
-                _context.next = 5;
+                _context.next = 7;
                 break;
               }
 
               return _context.abrupt('return', this.redirect('/update/'));
 
-            case 5:
+            case 7:
               this.display();
 
-            case 6:
+            case 8:
             case 'end':
               return _context.stop();
           }

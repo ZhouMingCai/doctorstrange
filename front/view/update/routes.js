@@ -1,5 +1,5 @@
 'use strict'
-import Home from './views/Home';
+import Home from './views/home';
 
 module.exports = {
     path: '/',
