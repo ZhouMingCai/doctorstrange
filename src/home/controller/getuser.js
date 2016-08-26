@@ -8,12 +8,9 @@ export default class extends Base {
    * @return {Promise} []
    */
   async indexAction(){
-    let isLogin = await this.isLogin();
-
-    if (isLogin) {
-        return this.display();
-    } else {
-        return this.redirect('/');
-    }
+    let user = await this.getUser();
+    this.success({
+        userInfo: user,
+    })
   }
 }

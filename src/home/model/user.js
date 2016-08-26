@@ -5,9 +5,25 @@ import {PasswordHash} from 'phpass';
 export default class extends think.model.base {
   init (...args) {
     super.init(...args);
-    this.tableName = "user"
+    this.tableName = 'user';
   }
 
+
+  getEmptyUser(){
+      return {
+          id: '',
+          user_name: '',
+          password: '',
+          email: '',
+          phone: '',
+          create_ip: '',
+          update_ip: '',
+          last_login_ip: '',
+          create_time: '',
+          update_time: '',
+          last_login_time: '',
+      }
+  }
 
   getEncryptPassword(password) {
     let passwordHash = new PasswordHash();
@@ -56,13 +72,30 @@ export default class extends think.model.base {
 
     if (!this.checkPassword(user, password)) {
       return 'PASSWORD_ERROR';
+    } else {
+        //更新登录ip,以及最近登录时间
+        let updateUser = this.getEmptyUser();
+        updateUser.id = user.id;
+        updateUser.last_login_ip = ip;
+        updateUser.last_login_time = new Date();
+        let result = await this.updateUser(updateUser);
+        if (!result) {
+            console.error('更新登录信息失败!');
+        }
     }
 
     return user;
   }
 
 
-  addUser(data, ip) {
+  /**
+   * 添加用户
+   * @method addUser
+   * @param  {[type]} data [description]
+   * @param  {[type]} ip   [description]
+   * @author jimmy
+   */
+  async addUser(data, ip) {
     let encryptPassword = this.getEncryptPassword(data.password);
 
     let type = data.type || 0;
@@ -79,37 +112,64 @@ export default class extends think.model.base {
     });
   }
 
-  async updateUser(data, ip) {
+  /**
+   * 更新用户
+   * @method updateUser
+   * @param  {[type]}   data [description]
+   * @return {[type]}        [description]
+   * @author jimmy
+   */
+  async updateUser(data) {
     let info = await this.where({
       id: data.id
     }).find();
 
     if (think.isEmpty(info)) {
-      return Promise.reject(new Error('USER_NOT_EXIST'));
+        console.error('USER_NOT_EXIST');
+        return false;
     }
 
+    //如果有修改密码
     let password = data.password;
     if (password) {
       password = this.getEncryptPassword(password)
     }
 
     let updateData = {};
-
-    ['avatar', 'phone', 'level', 'type'].forEach((val, name) => {
-      if (data[name]) {
-        updateData[name] = val;
+    //更新相应的内容
+    ['email', 'phone', 'ip', 'password', 'last_login_ip', 'last_login_time'].forEach((val, name) => {
+      if (data[val]) {
+        updateData[val] = data[val];
       }
     });
-
     if (think.isEmpty(updateData)) {
-      return Promise.reject('DATA_EMPTY');
+        console.error('DATA_EMPTY')
+      return false;
     }
-
-    updateData.last_login_time = Date.now();
-    updateData.last_login_ip = ip;
-
-    return this.where({
+    //更新更新时间
+    updateData.update_time = new Date();
+    //更新数据
+    return await this.where({
       id: data.id
     }).update(updateData);
   }
+
+    /**
+    * 根据主键查询用户
+    * @method selectUserById
+    * @param  {[type]}       id [description]
+    * @return {[type]}          [description]
+    * @author jimmy
+    */
+    async selectUserById(id){
+        let user = await this.where({
+            id: id
+        }).find();
+        if (think.isEmpty(user)) {
+            console.error('USER_NOT_EXIST');
+            return 'USER_NOT_EXIST';
+        } else {
+            return user;
+        }
+    }
 }

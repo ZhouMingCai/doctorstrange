@@ -1,4 +1,5 @@
 'use strict';
 module.exports = {
-    request: require('./request/request'),
+    request: require('./request'),
+    str: require('./string'),
 };

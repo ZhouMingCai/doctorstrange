@@ -11,8 +11,11 @@ import {request} from '../../../../../tools';
 import { Router, hashHistory, IndexRoute, browserHistory} from 'react-router';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import {userAction} from '../../../../../actions';
+import { connect } from 'react-redux'
 
-module.exports = class LoginSignUp extends Component {
+
+class LoginSignUp extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -26,6 +29,7 @@ module.exports = class LoginSignUp extends Component {
             errorMsgSign: '',
             showDialog: false,
         }
+        console.log(props);
         this.timeout = 0;
     }
 
@@ -78,6 +82,8 @@ module.exports = class LoginSignUp extends Component {
                     password: this.state.password,
                 },
                 (res) => {
+                    console.log(res);
+                    this.props.login(res.userInfo);
                     location.href = '/update/';
                 },
                 (err) => {
@@ -95,7 +101,7 @@ module.exports = class LoginSignUp extends Component {
         this.setState({
             errorMsg: ''
         });
-        if (this.state.userName && this.state.password && this.state.password == this.state.comfirmPass) {
+        if (this.state.userName && this.state.password && this.state.password == this.state.comfirmPass && this.state.email && this.state.phone) {
             request('/home/register',
                 {
                     userName: this.state.userName,
@@ -104,7 +110,6 @@ module.exports = class LoginSignUp extends Component {
                     phone: this.state.phone
                 },
                 (res) => {
-                    console.log(res);
                     this.setState({
                         userName: '',
                         password: '',
@@ -302,3 +307,18 @@ module.exports = class LoginSignUp extends Component {
         )
     }
 };
+
+
+let setState = (state) => {
+    return {
+        userReducer: state.userReducer
+    }
+};
+
+let setAction = (dispatch) => {
+    return {
+        logout: () => {dispatch(userAction.logout())},
+        login: (userInfo) => dispatch(userAction.login(userInfo))
+    }
+}
+module.exports = connect(setState, setAction)(LoginSignUp);

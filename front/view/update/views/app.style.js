@@ -5,9 +5,8 @@ const light = '#fff'
 
 module.exports = {
     container: {
-      textAlign: 'center',
-      paddingTop: 10,
-      justifyContent: 'flex-start'
+        textAlign: 'left',
+        justifyContent: 'flex-start'
     },
     link: {
         padding: 11,
@@ -21,5 +20,15 @@ module.exports = {
         background: light,
         color: '#FF5722',
         textDecoration: 'none'
+    },
+    userBtn: {
+        padding: 5,
+        fontWeight: 100,
+        color: 'white',
+        textDecoration: 'underline'
+    },
+    infoLabelBtnContainer: {
+        padding: 10,
+        textAlign: 'center'
     }
 };

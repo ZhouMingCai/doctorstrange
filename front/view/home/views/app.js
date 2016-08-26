@@ -14,6 +14,10 @@ import {Router, Route, Link, IndexLink} from 'react-router'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import Home from './home';
 import s from './app.style';
+import {userAction} from '../../../actions';
+import { connect } from 'react-redux'
+
+
 
 
 const muiTheme = getMuiTheme({
@@ -133,5 +137,6 @@ module.exports = class App extends Component {
     );
   }
 }
+
 
 // export default Main;

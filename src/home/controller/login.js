@@ -56,7 +56,8 @@ export default class extends Base {
 
       await this.session('userInfo', result);
         this.success({
-          status: 'ok'
+          status: 'ok',
+          userInfo: await this.getUser(),
         });
     }
     else {
@@ -91,15 +92,5 @@ export default class extends Base {
         this.redirect('/');
     //   }
     }
-  }
-
-
-  getMsg(msg){
-      switch (msg) {
-        case 'USER_NOT_EXIST]':
-            return '用户不存在!';
-        case 'PASSWORD_ERROR':
-            return '用户名或密码错误!';
-      }
   }
 }

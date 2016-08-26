@@ -8,7 +8,7 @@ export default class extends think.controller.base {
    * @param  {Number} status []
    * @return {Promise}        []
    */
-  displayError(status){
+  displayError(status, errMsg){
 
     //hide error message on production env
     if(think.env === 'production'){
@@ -16,7 +16,7 @@ export default class extends think.controller.base {
     }
 
     let errorConfig = this.config('error');
-    let message = this.http.error && this.http.error.message || '';
+    let message = errMsg? errMsg : this.http.error && this.http.error.message || '';
     if(this.isJsonp()){
       return this.jsonp({
         [errorConfig.key]: status,
@@ -40,21 +40,21 @@ export default class extends think.controller.base {
     });
   }
   /**
-   * Bad Request 
+   * Bad Request
    * @return {Promise} []
    */
   _400Action(){
     return this.displayError(400);
   }
   /**
-   * Forbidden 
+   * Forbidden
    * @return {Promise} []
    */
   _403Action(){
     return this.displayError(403);
   }
   /**
-   * Not Found 
+   * Not Found
    * @return {Promise}      []
    */
   _404Action(){
@@ -73,5 +73,9 @@ export default class extends think.controller.base {
    */
   _503Action(){
     return this.displayError(503);
+  }
+
+  _404Dot1Action(){
+      return this.displayError(404.1);
   }
 }

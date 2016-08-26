@@ -9,7 +9,6 @@ import s from './home.style';
 import 'whatwg-fetch';
 import {Link} from 'react-router'
 
-
 const muiTheme = getMuiTheme({
   palette: {
     accent1Color: green500,
