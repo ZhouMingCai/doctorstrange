@@ -13,16 +13,10 @@ module.exports = class HotTextField extends Component {
         super(props);
 
         this.state = {
-            showError: this.props.showError,
+            showError: false,
         }
         this.timeout = 0;
 
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            showError: nextProps.showError
-        })
     }
 
     render(){

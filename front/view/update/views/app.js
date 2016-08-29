@@ -54,6 +54,7 @@ class App extends Component {
         '应用列表',
         '添加应用',
     ]
+    console.log(props);
   }
 
   handleRequestClose() {
@@ -89,6 +90,7 @@ class App extends Component {
         {},
         (res) => {
             if (res.userInfo) {
+              console.log(str.date(res.userInfo.last_login_time).format('y-m-d h:i:s'));
                 this.props.set(res.userInfo);
             } else {
                 //代表未登录
@@ -101,11 +103,25 @@ class App extends Component {
     )
   }
 
+  /**
+   * 验证用户是否为空
+   * @method _userIsNotEmty
+   * @return {[type]}       [description]
+   * @author jimmy
+   */
   _userIsNotEmty(){
       let userReducer = this.props.userReducer;
       return userReducer && userReducer.userName;
   }
 
+  /**
+   * 动态显示appBar的title
+   * @method handleChangeSingle
+   * @param  {[type]}           event [description]
+   * @param  {[type]}           value [description]
+   * @return {[type]}                 [description]
+   * @author jimmy
+   */
   handleChangeSingle(event, value){
       this.setState({
           valueSingle: value,
@@ -113,6 +129,12 @@ class App extends Component {
       });
   }
 
+  /**
+   * 渲染appbar左边菜单项
+   * @method _renderMenu
+   * @return {[type]}    [description]
+   * @author jimmy
+   */
   _renderMenu(){
       return (
           <IconMenu
@@ -145,11 +167,19 @@ class App extends Component {
 
   }
 
+  /**
+   * 登出操作
+   * @method _logout
+   * @return {[type]} [description]
+   * @author jimmy
+   */
   _logout(){
       request(
           '/home/login/logout/',
           {},
           (res) => {
+              console.log(res);
+              console.log(this.props);
               this.props.logout();
               location.href = '/';
           },
@@ -233,6 +263,7 @@ class App extends Component {
                         onTouchTap={this.handleToggle}
                     ></RaisedButton>
                     <RaisedButton
+                        onTouchTap={this._logout.bind(this)}
                         label='登出'
                     ></RaisedButton>
                 </div>
@@ -257,7 +288,7 @@ class App extends Component {
                    </div>
                </FlatButton>
                <FlatButton
-                  onTouchTap={this.handleToggle}
+                  onTouchTap={this._logout.bind(this)}
                 >
                     <div style={s.userBtn}>
                         登出

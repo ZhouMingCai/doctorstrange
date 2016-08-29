@@ -79,6 +79,7 @@ export default class extends think.model.base {
         updateUser.last_login_ip = ip;
         updateUser.last_login_time = new Date();
         let result = await this.updateUser(updateUser);
+        console.log('res',result);
         if (!result) {
             console.error('更新登录信息失败!');
         }
@@ -148,6 +149,8 @@ export default class extends think.model.base {
     }
     //更新更新时间
     updateData.update_time = new Date();
+
+    console.log('updatedata',updateData);
     //更新数据
     return await this.where({
       id: data.id

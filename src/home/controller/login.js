@@ -67,30 +67,20 @@ export default class extends Base {
     }
   }
 
+  /**
+   * 登出操作
+   * @method logoutAction
+   * @return {[type]}     [description]
+   * @author jimmy
+   */
   async logoutAction () {
     let isLogin = await this.isLogin();
 
     if (isLogin) {
       await this.session('userInfo', null);
-
-      if (this.isAjax()) {
-        this.success({
-          status: 'ok'
-        })
-      }
-      else {
-        this.redirect('/');
-      }
     }
-    else {
-    //   if (this.isAjax()) {
-    //     this.success({
-    //       status: 'ok'
-    //     })
-    //   }
-    //   else {
-        this.redirect('/');
-    //   }
-    }
+    this.success({
+      status: 'ok'
+    })
   }
 }

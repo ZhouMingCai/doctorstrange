@@ -94,6 +94,10 @@ class LoginSignUp extends Component {
                     console.log(this.state.errorMsg);
                 }
             )
+        } else {
+          this.setState({
+            errorMsg: '请输入用户名或密码'
+          })
         }
     }
 
@@ -158,7 +162,7 @@ class LoginSignUp extends Component {
                             floatingLabelFocusStyle={s.floatingLabelFocusStyle}
                             underlineFocusStyle={s.underlineStyle}
                             type='text'
-                            regexp='^[A-Za-z0-9]+$'
+                            regexp='^\S+[a-z A-Z0-9]$'
                             errorText='请输入正确的用户名（不能为空，且含只能含数字和英文字符）'
                             onChange={this._onNameChange.bind(this)}
                             /><br />
@@ -245,7 +249,7 @@ class LoginSignUp extends Component {
                             underlineFocusStyle={s.underlineStyle}
                             type='text'
                             regexp='^[A-Za-z0-9]+$'
-                            errorText='请输入正确的用户名（不能为空，且含只能含数字和英文字符）'
+                            errorText='请输入用户名'
                             onChange={this._onNameChange.bind(this)}
                             /><br />
                         <TextField
@@ -267,7 +271,7 @@ class LoginSignUp extends Component {
                                 </div> : null
                             }
                             <div style={s.btnContainer}>
-                                <RaisedButton label='登录' style={s.submitBtn} secondary={true} onClick={this._loginSubmitAction.bind(this)}></RaisedButton>
+                                <RaisedButton label='登录' type='submit' style={s.submitBtn} secondary={true} onClick={this._loginSubmitAction.bind(this)}></RaisedButton>
                             </div>
                     </Tab>
                 </Tabs>
