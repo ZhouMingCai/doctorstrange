@@ -18,6 +18,10 @@ module.exports = {
   externals: /^[a-z\-0-9\/]+$/,
   module: {
     loaders: [
+        {
+            test: /\.json$/,
+            loader: ExtractTextPlugin.extract('json-loader')
+        },
       {
         test: /\.(css|less|scss|sass)$/,
         loaders: ['ignore-stylesheet']

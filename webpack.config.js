@@ -17,35 +17,39 @@ module.exports = [{
   progress: true,
   module: {
     loaders: [
-      {
-        test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
-      },
-      {
-        test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!css-path-loader!sass-loader')
-      },
-      {
-        test: /\.less$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!css-path-loader!less-loader')
-      },
-      {
-        test: /\.js$/,
-        loaders: ['babel', 'html-path-loader']
-      },
-      {
-        test: /\.(jpe?g|png|gif|svg)$/i,
-        loaders: [
-          'file?hash=sha512&digest=hex&name=[hash].[ext]',
-          'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
+        {
+            test: /\.json$/,
+            loader: ExtractTextPlugin.extract('json-loader')
+        },
+        {
+            test: /\.css$/,
+            loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
+        },
+        {
+            test: /\.scss$/,
+            loader: ExtractTextPlugin.extract('style-loader', 'css-loader!css-path-loader!sass-loader')
+        },
+        {
+            test: /\.less$/,
+            loader: ExtractTextPlugin.extract('style-loader', 'css-loader!css-path-loader!less-loader')
+        },
+        {
+            test: /\.js$/,
+            loaders: ['babel', 'html-path-loader']
+        },
+        {
+            test: /\.(jpe?g|png|gif|svg)$/i,
+            loaders: [
+              'file?hash=sha512&digest=hex&name=[hash].[ext]',
+              'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
         ]
-      },
-      {
-        test: /\.(woff|woff2|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/i,
-        loaders: [
-          'file?hash=sha512&digest=hex&limit=3000&name=font/[hash:8].[name].[ext]'
+        },
+        {
+            test: /\.(woff|woff2|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/i,
+            loaders: [
+              'file?hash=sha512&digest=hex&limit=3000&name=font/[hash:8].[name].[ext]'
         ]
-      }
+        }
     ]
   },
   plugins: [

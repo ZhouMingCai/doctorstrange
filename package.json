@@ -9,6 +9,7 @@
     "watch": "npm run watch-compile"
   },
   "dependencies": {
+    "app-bundle-info": "^0.2.1",
     "babel-cli": "6.x.x",
     "babel-eslint": "^4.1.8",
     "babel-loader": "^6.2.4",
@@ -19,9 +20,12 @@
     "fs": "0.0.2",
     "history": "^2.1.2",
     "html-webpack-plugin": "^2.7.2",
+    "json-loader": "^0.5.4",
+    "jszip": "^3.1.2",
     "moment": "^2.14.1",
     "net": "^1.0.2",
     "phpass": "^0.1.1",
+    "plist": "^2.0.1",
     "react": "^15.3.0",
     "react-addons-css-transition-group": "^15.3.0",
     "react-dom": "^15.3.0",
