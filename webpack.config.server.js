@@ -20,7 +20,7 @@ module.exports = {
     loaders: [
         {
             test: /\.json$/,
-            loader: ExtractTextPlugin.extract('json-loader')
+            loaders: ['json-loader']
         },
       {
         test: /\.(css|less|scss|sass)$/,
@@ -54,5 +54,8 @@ module.exports = {
     //   new webpack.optimize.UglifyJsPlugin({
     //    minimize: true
     //   }),
-  ]
+],
+node: {
+    child_process: 'empty'
+}
 }
