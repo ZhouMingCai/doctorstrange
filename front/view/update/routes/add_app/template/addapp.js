@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import FileUpload from 'react-fileupload';
 import RaisedButton from 'material-ui/RaisedButton';
 import LinearProgress from 'material-ui/LinearProgress';
-import AppBundleInfo from 'app-bundle-info';
+import {AppBundleInfo} from '../../../../../tools';
 
 const infoPlistRegex = new RegExp('Info.plist');
 
@@ -79,7 +79,7 @@ class AddApp extends React.Component {
      */
     _chooseFile(files){
         let file = files[0];
-        
+
     }
 
     render() {

@@ -7,6 +7,7 @@ var servers = require('./pages').getServer();
 module.exports = {
   name: 'server side render',
   entry: servers,
+  devtool: 'source-map',
   output: {
     path: path.join(__dirname, 'share'),
     filename: "[name].bundle.js",

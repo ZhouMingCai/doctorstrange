@@ -14,6 +14,7 @@ module.exports = [{
     filename: "[name].bundle.js",
     publicPath: '/static/dist/'
   },
+  devtool: 'source-map',
   progress: true,
   module: {
     loaders: [
