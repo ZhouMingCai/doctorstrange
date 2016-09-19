@@ -17,19 +17,17 @@ module.exports = (url, params, success, error) => {
         if (res.errno == 0) {
             success? success(res.data) : null;
         } else {
-            console.error(res.errmsg);
-            console.log(res);
             error? error(res) : null;
         }
     })
     .catch((err) => {
+        error? error(err) : null;
         console.log(err);
     });
 }
 
 
  function status(response){
-     console.log(response);
     if(response.status == 203){
             console.log('i am  in  203.......')
         // if(__STORE.getState().userReducer.sessionId){

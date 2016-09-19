@@ -3,6 +3,7 @@
 import Base from './base.js';
 import fs from 'fs';
 import path from 'path';
+import AppBundleInfo from 'app-bundle-info';
 
 export default class extends Base {
 
@@ -22,6 +23,23 @@ export default class extends Base {
 
     file.path = uploadPath + '/' + basename;
 
+    AppBundleInfo.autodetect(file.path,function(err,bundleInfo){
+        bundleInfo.loadInfo(function(err,information){
+            console.log('info', bundleInfo);
+            if (bundleInfo.type == 'ios') {
+                assert.equal(bundleInfo.getIdentifier(), information.CFBundleIdentifier)
+                assert.equal(bundleInfo.getName(), information.CFBundleDisplayName || information.CFBundleName)
+                assert.equal(bundleInfo.getVersionName(), information.CFBundleShortVersionString)
+                assert.equal(bundleInfo.getVersionCode(), information.CFBundleVersion)
+            } else if (bundleInfo.type == 'android') {
+                assert.equal(bundleInfo.getIdentifier(), information.package)
+                assert.equal(bundleInfo.getName(), information.package) // TODO: get application icon name
+                assert.equal(bundleInfo.getVersionName(), information.versionName)
+                assert.equal(bundleInfo.getVersionCode(), information.versionCode)
+            }
+
+        });
+    });
     if(think.isFile(file.path)){
         this.success({
             name: basename

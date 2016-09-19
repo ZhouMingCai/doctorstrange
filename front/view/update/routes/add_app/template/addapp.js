@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import FileUpload from 'react-fileupload';
 import RaisedButton from 'material-ui/RaisedButton';
 import LinearProgress from 'material-ui/LinearProgress';
-import {AppBundleInfo} from '../../../../../tools';
+// import {AppBundleInfo} from '../../../../../tools';
 
 const infoPlistRegex = new RegExp('Info.plist');
 
@@ -16,8 +16,6 @@ class AddApp extends React.Component {
             completed: 0,//
             max: 100
         }
-        console.log(plist);
-        console.log(fs);
         this.options = {
           baseUrl:'/update/upload/uploadfile',
           param:{
@@ -86,35 +84,37 @@ class AddApp extends React.Component {
         return (
           <div>
             <h2>AddApp</h2>
-                <FileUpload options={this.options} >
-                    <RaisedButton
-                        ref='chooseBtn'
-                        primary={true}
-                        disableTouchRipple={true}
-                        disableFocusRipple={true}
-                        style={{margin: 12, marginRight: 6}}
-                        label='选择文件'
-                        ></RaisedButton>
-                    <RaisedButton
-                        ref='uploadBtn'
-                        primary={true}
-                        disableTouchRipple={true}
-                        disableFocusRipple={true}
-                        style={{margin: 12, marginRight: 6}}
-                        label='上传'
-                        ></RaisedButton>
-                </FileUpload>
-                <LinearProgress
-                    mode='determinate'
-                    value={this.state.completed}
-                    max={this.state.max}
-                    min={0}
-                    ></LinearProgress>
+            
           </div>
         )
     }
 
 }
+
+{/* <FileUpload options={this.options} >
+    <RaisedButton
+        ref='chooseBtn'
+        primary={true}
+        disableTouchRipple={true}
+        disableFocusRipple={true}
+        style={{margin: 12, marginRight: 6}}
+        label='选择文件'
+        ></RaisedButton>
+    <RaisedButton
+        ref='uploadBtn'
+        primary={true}
+        disableTouchRipple={true}
+        disableFocusRipple={true}
+        style={{margin: 12, marginRight: 6}}
+        label='上传'
+        ></RaisedButton>
+</FileUpload>
+<LinearProgress
+    mode='determinate'
+    value={this.state.completed}
+    max={this.state.max}
+    min={0}
+    ></LinearProgress> */}
 
 let setState = (state) => {
     return {

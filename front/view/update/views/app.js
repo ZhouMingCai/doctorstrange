@@ -46,7 +46,7 @@ class App extends Component {
     this.state = {
       showMenu: false,
       valueSingle: '1',
-      title: '首页',
+      title: '热更新',
       open: false,
     };
     this.titleList = [
@@ -54,7 +54,6 @@ class App extends Component {
         '应用列表',
         '添加应用',
     ]
-    console.log(props);
   }
 
   handleRequestClose() {
@@ -178,8 +177,6 @@ class App extends Component {
           '/home/login/logout/',
           {},
           (res) => {
-              console.log(res);
-              console.log(this.props);
               this.props.logout();
               location.href = '/';
           },

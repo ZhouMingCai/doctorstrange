@@ -30,6 +30,20 @@ export default class extends Base {
       this.success(result);
   }
 
+
+  async getversionlistpageAction(){
+      let isLogin = await this.isLogin();
+      if (isLogin) {
+          let appId = this.post('appId');
+          let pageNum = this.post('pageNum');
+          let limit = this.post('limit');
+
+          let result = await this.model('version').getVersionListPageByAppId(appId, pageNum, limit);
+          this.success(result);
+      } else {
+          return this.redirect('/');
+      }
+  }
   /**
    * 获取当前所有版本
    * @method selectallversionAction

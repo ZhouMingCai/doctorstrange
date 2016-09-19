@@ -75,6 +75,7 @@ module.exports = [{
     // }),
 ],
 node: {
-    child_process: 'empty'
-}
+    child_process: 'empty',
+},
+target:'atom',
 }, serverConfig]
