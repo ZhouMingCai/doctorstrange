@@ -29,7 +29,20 @@ export default class extends think.model.base {
      */
     async getVersionListByAppId(appId){
         return await this.where({
-            id: appId,
+            app_id: appId,
         }).select();
+    }
+
+    /**
+     * 根据id获取版本信息
+     * @method getVersionInfoById
+     * @param  {[type]}           id [description]
+     * @return {[type]}              [description]
+     * @author jimmy
+     */
+    async getVersionInfoById(id){
+        return await this.where({
+            id: id,
+        }).find();
     }
 }

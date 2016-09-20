@@ -14,6 +14,8 @@ import Location from 'material-ui/svg-icons/communication/location-on';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import {Router, Route, Link, IndexLink} from 'react-router'
+import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
+import FlatButton from 'material-ui/FlatButton';
 
 
 const s = {
@@ -22,7 +24,11 @@ const s = {
         bottom: 300,
         right: 100,
         zDepth: 0
-    }
+    },
+    listItemStyle: {
+        backgroundColor: '#e5e5e5',
+        marginBottom: '2px'
+    },
 }
 
 const muiTheme = getMuiTheme({
@@ -37,7 +43,7 @@ module.exports = class VersionList extends Component{
 
         this.state = {
             pageNum: 1,
-            limit: 15,
+            limit: 10,
             appId: this.props.params.appId,
             dataList: [],
             totalPage: 0,
@@ -80,6 +86,7 @@ module.exports = class VersionList extends Component{
                     <List>
                         {this._renderItems()}
                     </List>
+                    {this._renderPageNavigator()}
                     <Link to={'addVersion/'+this.state.appId} style={s.addBtnPosition}>
                         <FloatingActionButton secondary={true}  >
                           <ContentAdd />
@@ -91,6 +98,38 @@ module.exports = class VersionList extends Component{
         )
     }
 
+
+    _renderPageNavigator(){
+        return (
+            <div style={s.pageBottom}>
+                {
+                    this.state.pageNum > 1?
+                    <FlatButton
+                      label='上一页'
+                    /> : null
+                }
+                {
+                    this.state.pageNum < this.state.totalPage && this.state.pageNum > 0?
+                    <FlatButton
+                      label='下一页'
+                    /> : null
+                }
+            </div>
+        )
+    }
+
+
+    _renderPageNum(){
+        let elements = [];
+        let i = 1;
+        while (i <= this.state.totalPage) {
+            elements.push(
+                <FlatButton
+                    label={i}
+                ></FlatButton>
+            )
+        }
+    }
 
     _renderItems(){
         if (!str.arrIsEmpty(this.state.dataList)) {
@@ -107,20 +146,21 @@ module.exports = class VersionList extends Component{
                      nestedItems={[
                        <ListItem
                          key={1}
+                         style={s.listItemStyle}
                          primaryText='创建时间'
                          secondaryText={str.date(item.create_time).format('y-m-d h:i:s')}
                          leftIcon={<AccessTime color={green700} />}
                        />,
-                        <Divider key={1.1} inset={true} />,
                        <ListItem
                          key={2}
+                         style={s.listItemStyle}
                          primaryText='文件地址'
                          secondaryText={item.url}
                          leftIcon={<Location color={green700} />}
                        />,
-                        <Divider key={2.1} inset={true} />,
                        <ListItem
                          key={3}
+                         style={s.listItemStyle}
                          primaryText='兼容原生版本号'
                          secondaryText={item.min_container_version.version_str}
                          leftIcon={<BookBorder color={green700} />}
@@ -130,6 +170,7 @@ module.exports = class VersionList extends Component{
                            <ListItem
                                key={1}
                                primaryText='创建时间'
+                               style={s.listItemStyle}
                                leftIcon={<AccessTime color={green700} />}
                                secondaryText={str.date(item.min_container_version.create_time).format('y-m-d h:i:s')}
                                />,
@@ -137,7 +178,7 @@ module.exports = class VersionList extends Component{
                        />,
                     ]}></ListItem>
                 );
-                elemnts.push(<Divider key={key+0.1} inset={false} />)
+                elemnts.push(<Divider style={s.divider} key={key+0.1} inset={false} />)
             });
 
             return elemnts;

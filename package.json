@@ -23,6 +23,7 @@
     "fs": "0.0.2",
     "history": "^2.1.2",
     "html-webpack-plugin": "^2.7.2",
+    "js-md5": "^0.4.1",
     "json-loader": "^0.5.4",
     "jszip": "^3.1.2",
     "moment": "^2.14.1",

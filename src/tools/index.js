@@ -1,4 +1,5 @@
 'use strict';
 module.exports = {
-    appBundleInfo: require('./appBundleInfo'),
+    jsbundlefinder: require('./jsbundlefinder'),
+    obj: require('./object'),
 };

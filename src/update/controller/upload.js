@@ -3,7 +3,8 @@
 import Base from './base.js';
 import fs from 'fs';
 import path from 'path';
-import AppBundleInfo from 'app-bundle-info';
+import {jsbundlefinder, obj} from '../../tools';
+import md5 from 'js-md5';
 
 export default class extends Base {
 
@@ -11,45 +12,96 @@ export default class extends Base {
       this.display()
   }
 
+  /**
+   * 上传并添加js版本
+   * @method uploadfileAction
+   * @return {[type]}         [description]
+   * @author jimmy
+   */
   async uploadfileAction(){
-      //这里的 key 需要和 form 表单里的 name 值保持一致
-    var file = this.file('bundle');
-    var filepath = file.path;
-    //文件上传后，需要将文件移动到项目其他地方，否则会在请求结束时删除掉该文件
-    var uploadPath = think.RESOURCE_PATH + '/bundle';
-    think.mkdir(uploadPath);
-    var basename = file.fieldName;
-    fs.renameSync(filepath, uploadPath + '/' + basename);
+    //这里的 key 需要和 form 表单里的 name 值保持一致
+    let file = this.file('bundle');
+    let filepath = file.path;
 
-    file.path = uploadPath + '/' + basename;
+    let appId = this.get('appId');
+    let jsMajor = this.get('jsMajor');
+    let jsMinor = this.get('jsMinor');
+    let jsPatch = this.get('jsPatch');
+    let miniContainer = this.get('miniContainerId');
 
-    AppBundleInfo.autodetect(file.path,function(err,bundleInfo){
-        bundleInfo.loadInfo(function(err,information){
-            console.log('info', bundleInfo);
-            if (bundleInfo.type == 'ios') {
-                assert.equal(bundleInfo.getIdentifier(), information.CFBundleIdentifier)
-                assert.equal(bundleInfo.getName(), information.CFBundleDisplayName || information.CFBundleName)
-                assert.equal(bundleInfo.getVersionName(), information.CFBundleShortVersionString)
-                assert.equal(bundleInfo.getVersionCode(), information.CFBundleVersion)
-            } else if (bundleInfo.type == 'android') {
-                assert.equal(bundleInfo.getIdentifier(), information.package)
-                assert.equal(bundleInfo.getName(), information.package) // TODO: get application icon name
-                assert.equal(bundleInfo.getVersionName(), information.versionName)
-                assert.equal(bundleInfo.getVersionCode(), information.versionCode)
-            }
+    let containerVersionInfo = await this.model('container_version').getVersionInfoById(miniContainer);
+    if (containerVersionInfo) {
 
+        let result = await this.model('version').getVersionInfoByVersionInfo(appId, miniContainer, jsMajor, jsMinor, jsPatch);
+        if (obj.objIsEmpty(result)) {
+            /**
+             * 获取app的bundleId
+             */
+            let appBundleId = containerVersionInfo.bundle_id;
+            let containerStr = containerVersionInfo.major + '.' + containerVersionInfo.minor + '.' + containerVersionInfo.patch;
+            let timestamp = process.hrtime();
+            let fileName = timestamp + appBundleId + containerStr + '&&' + jsMajor + '.' + jsMinor + '.' + jsPatch;
+            jsbundlefinder.getJsBundle(file, (err, data) => {
+                if (err) {
+                    this.fail({
+                        errmsg: '上传失败!'
+                    })
+                } else {
+                    /**
+                     * 写入复制jsbunle文件
+                     * @type {[type]}
+                     */
+                    let bundle = data.jsbundle;
+                    let uploadPath = think.RESOURCE_PATH + '/bundle/'+appBundleId;
+                    fs.exists(uploadPath, (exists) => {
+                        if (!exists) {
+                            think.mkdir(uploadPath);
+                        }
+                    });
+                    fs.renameSync(bundle, uploadPath+'/'+fileName);
+
+                    fs.exists(uploadPath+'/'+fileName, async (exists) => {
+                        if (exists) {
+                            //文件复制成功后向数据库里插入记录
+                            let insertData = {
+                                appId: appId,
+                                miniContainerId: miniContainer,
+                                url: fileName,
+                                major: jsMajor,
+                                minor: jsMinor,
+                                patch: jsPatch,
+                                isRelative: 1,
+                                bundleId: appBundleId
+                            }
+                            let result = await this.model('version').addVersion(insertData);
+                            if (result) {
+                                this.success({
+                                    errmsg: '添加成功！'
+                                });
+                            } else {
+                                this.fail({
+                                    errmsg: '上传失败!'
+                                });
+                            }
+
+                        } else {
+                            this.fail({
+                                errmsg: '上传失败!'
+                            });
+                        }
+                    });
+                }
         });
-    });
-    if(think.isFile(file.path)){
-        this.success({
-            name: basename
-        });
-    }else{
+        } else {
+            this.fail({
+                errmsg: '该版本已存在!'
+            })
+        }
+    }else {
         this.fail({
-            errmsg: '上传失败!'
+            errmsg: '上传失败!不能存在该最小兼容版本'
         })
     }
-
 
   }
 

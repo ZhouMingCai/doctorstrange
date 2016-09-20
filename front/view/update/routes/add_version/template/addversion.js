@@ -20,7 +20,9 @@ import LinearProgress from 'material-ui/LinearProgress';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import CircularProgress from 'material-ui/CircularProgress';
-import AppBundleInfo from 'app-bundle-info';
+import Dialog from 'material-ui/Dialog';
+import {Router, Route, Link, IndexLink} from 'react-router'
+
 
 
 const s = {
@@ -90,30 +92,32 @@ class AddVersion extends Component {
             jsMajor: '',
             jsMinor: '',
             jsPatch: '',
+            miniContainerId: '',
+            fileName: '',
+            modalOpen: false
         }
 
         this.options = {
           baseUrl:'/update/upload/uploadfile',
           param:{
-              name:'bundle'
+              name:'bundle',
+              jsMajor: this.state.jsMajor,
+              jsMinor: this.state.jsMinor,
+              jsPatch: this.state.jsPatch,
+              appId: this.state.appId,
+              miniContainerId: this.state.selectVersion
           },
           chooseAndUpload: false,
           accept: 'bunble/*',
           dataType: 'json',
           multiple: false,
           fileFieldName: 'bundle',
-          chooseFile: (files) => this._chooseFile(files),
+          chooseFile: (files) => this._chooseFiles(files),
           uploading: (progress, mill) => this._showProgress(progress),
           doUpload: (files,mill,xhrID) => {
-              console.log(files);
+
           },
-          uploadSuccess: (res) => {
-              if (res.errno == 0 && res.data.name) {
-                  this.setState({
-                      fileName: res.data.name
-                  });
-              }
-          },
+          uploadSuccess: this._uploadSuccess,
           uploadError: (err) => {
               alert(err.errmsg)
           },
@@ -123,15 +127,13 @@ class AddVersion extends Component {
         }
     }
 
-    /**
-     * 选择文件时做处理
-     * @method _chooseFile
-     * @param  {[type]}    files [description]
-     * @return {[type]}          [description]
-     * @author jimmy
-     */
-    _chooseFile(files){
-
+    _uploadSuccess = (res) => {
+        if (res.errno == 0) {
+            this.setState({
+                errmsg: res.data.errmsg,
+                modalOpen: true
+            });
+        }
     }
 
     /**
@@ -141,7 +143,7 @@ class AddVersion extends Component {
      * @return {[type]}               [description]
      * @author jimmy
      */
-    _showProgress(progress){
+    _showProgress = (progress) => {
         let completed = (progress.loaded/progress.total) * 100;
         if (completed > 100) {
             this.setState({
@@ -188,13 +190,21 @@ class AddVersion extends Component {
     }
   }
 
-  dummyAsync(cb){
+  _chooseFiles = (files) => {
+      let file = files[0];
+      let name = file.name;
+      this.setState({
+          fileName: name,
+      })
+  }
+
+  dummyAsync = (cb) => {
     this.setState({loading: true}, () => {
       this.asyncTimer = setTimeout(cb, 500);
     });
   }
 
-  handlePrev(){
+  handlePrev = () => {
     let stepIndex = this.state.stepIndex;
     if (!this.state.loading) {
       this.dummyAsync(() => this.setState({
@@ -204,7 +214,8 @@ class AddVersion extends Component {
     }
   }
 
-  _handleVersionSelect(event, index, value){
+  _handleVersionSelect = (event, index, value) => {
+      this.options.param.miniContainerId = value;
       this.setState({
           selectVersion: value
       });
@@ -213,18 +224,21 @@ class AddVersion extends Component {
   _onTextChange(type, res){
       switch (type) {
             case 'jsMajor':
+                this.options.param.jsMajor = res.target.value;
                 this.setState({
-                    jsMajor: res
+                    jsMajor: res.target.value
                 });
               break;
             case 'jsMinor':
+                this.options.param.jsMinor = res.target.value;
                 this.setState({
-                    jsMinor: res
+                    jsMinor: res.target.value
                 });
                 break;
             case 'jsPatch':
+                this.options.param.jsPatch = res.target.value;
                 this.setState({
-                    jsPatch: res
+                    jsPatch: res.target.value
                 });
                 break;
       }
@@ -242,6 +256,7 @@ class AddVersion extends Component {
                    floatingLabelFocusStyle={s.floatingLabelFocusStyle}
                    errorStyle={s.errorStyle}
                    type='number'
+                   value={this.state.jsMajor}
                    onChange={(res)=>this._onTextChange('jsMajor', res)}
                  />
                 <br/>
@@ -252,6 +267,7 @@ class AddVersion extends Component {
                     floatingLabelFocusStyle={s.floatingLabelFocusStyle}
                     errorStyle={s.errorStyle}
                     type='number'
+                    value={this.state.jsMinor}
                     onChange={(res)=>this._onTextChange('jsMinor', res)}
                   />
                   <br/>
@@ -262,6 +278,7 @@ class AddVersion extends Component {
                      floatingLabelFocusStyle={s.floatingLabelFocusStyle}
                      errorStyle={s.errorStyle}
                      type='number'
+                     value={this.state.jsPatch}
                      onChange={(res)=>this._onTextChange('jsPatch', res)}
                    />
            </div>
@@ -274,7 +291,7 @@ class AddVersion extends Component {
               <div>
                 <SelectField
                     value={this.state.selectVersion}
-                    onChange={this._handleVersionSelect.bind(this)}
+                    onChange={this._handleVersionSelect}
                     floatingLabelText='最小原生版本号'
                     hintText='请选择'
                     floatingLabelStyle={s.floatingLabelStyle}
@@ -282,6 +299,7 @@ class AddVersion extends Component {
                     errorStyle={s.errorStyle}
                     autoWidth={true}
                     style={s.selectStyle}
+                    value={this.state.selectVersion}
                 >
                     {
                         this.state.containerVersionList.map((item, key) => {
@@ -297,6 +315,11 @@ class AddVersion extends Component {
       case 2:
         return (
           <p>
+              <TextField
+                  disabled={true}
+                  value={this.state.fileName}
+                  hintText='请选择！'
+              ></TextField>
               <FileUpload options={this.options} >
                   <RaisedButton
                       ref='chooseBtn'
@@ -356,7 +379,7 @@ class AddVersion extends Component {
           <FlatButton
             label='上一步'
             disabled={stepIndex === 0}
-            onTouchTap={this.handlePrev.bind(this)}
+            onTouchTap={this.handlePrev}
             style={{marginRight: 12}}
           />
           <RaisedButton
@@ -371,6 +394,20 @@ class AddVersion extends Component {
 
 
     render() {
+        let actions = [
+         <FlatButton
+           label='确定'
+           primary={true}
+           keyboardFocused={true}
+           onTouchTap={() => {
+               this.setState({
+                   modalOpen: false
+               });
+               this.props.history.push('versionlist/'+this.state.appId)
+           }}
+         > </FlatButton>
+        ,
+        ];
         return (
             <MuiThemeProvider muiTheme={muiTheme}>
                 {
@@ -394,13 +431,29 @@ class AddVersion extends Component {
                         <ExpandTransition loading={this.state.loading} open={true}>
                           {this.renderContent()}
                         </ExpandTransition>
-                      </div>
+                        <Dialog
+                          title='提示'
+                          actions={actions}
+                          modal={false}
+                          open={this.state.modalOpen}
+                          onRequestClose={() => this.setState({
+                              modalOpen: false
+                          })}
+                        >
+                          操作成功！
+                       </Dialog>
+                     </div>
                 }
+
+
 
             </MuiThemeProvider>
         )
     }
 
+    _goList(){
+
+    }
 }
 
 module.exports = AddVersion

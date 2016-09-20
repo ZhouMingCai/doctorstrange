@@ -58,4 +58,43 @@ export default class extends think.model.base {
         return result;
 
     }
+
+    /**
+     * 根据条件查询版本号
+     * @method getVersionInfoByVersionInfo
+     * @param  {[type]}                    appId           [description]
+     * @param  {[type]}                    miniContainerId [description]
+     * @param  {[type]}                    major           [description]
+     * @param  {[type]}                    minor           [description]
+     * @param  {[type]}                    patch           [description]
+     * @return {[type]}                                    [description]
+     * @author jimmy
+     */
+    async getVersionInfoByVersionInfo(appId, miniContainerId, major, minor, patch){
+        return await this.where({
+            app_id: appId,
+            min_container_version_id: miniContainerId,
+            major: major,
+            minor: minor,
+            patch: patch,
+        }).find();
+    }
+    /**
+     * 添加js版本号
+     * @method addVersion
+     * @param  {[type]}   data [description]
+     * @author jimmy
+     */
+    async addVersion(data){
+        return await this.add({
+          app_id: data.appId,
+          min_container_version_id: data.miniContainerId,
+          major: data.major,
+          minor: data.minor,
+          patch: data.patch,
+          bundle_id: data.bundleId,
+          is_relative: data.isRelative,
+          url: data.url
+        });
+    }
 }
