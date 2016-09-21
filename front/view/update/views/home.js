@@ -1,19 +1,14 @@
 import React, {Component} from 'react';
-import {deepOrange500} from 'material-ui/styles/colors';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Toggle from 'material-ui/Toggle';
-
-const muiTheme = getMuiTheme({
-  palette: {
-    accent1Color: deepOrange500,
-  },
-});
+import {Page} from 'components';
+import {titleAction} from 'actions';
+import { connect } from 'react-redux';
 
 
-module.exports = class Home extends Component {
+
+class Home extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -22,6 +17,9 @@ module.exports = class Home extends Component {
 
     }
 
+    componentDidMount() {
+        this.props.setTitle('首页');
+    }
 
     handleExpandChange(expanded){
         this.setState({expanded: expanded});
@@ -41,7 +39,7 @@ module.exports = class Home extends Component {
 
     render(){
         return (
-            <MuiThemeProvider muiTheme={muiTheme}>
+            <Page>
                 <div>
                     <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange.bind(this)}>
                        <CardHeader
@@ -76,7 +74,20 @@ module.exports = class Home extends Component {
                        </CardActions>
                      </Card>
                 </div>
-            </MuiThemeProvider>
+            </Page>
         )
     }
+};
+
+let setState = (state) => {
+    return {
+        titleReducer: state.titleReducer,
+    }
+};
+
+let setAction = (dispatch) => {
+    return {
+        setTitle: (title) => dispatch(titleAction.setTitle(title))
+    }
 }
+module.exports = connect(setState, setAction)(Home);

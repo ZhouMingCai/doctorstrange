@@ -15,7 +15,6 @@ module.exports = {
     chunkFilename: '[name].[id].bundle.js',
     publicPath: '/static/dist/'
   },
-  target: 'node',
   externals: /^[a-z\-0-9\/]+$/,
   module: {
     loaders: [
@@ -58,5 +57,12 @@ module.exports = {
 ],
 node: {
     child_process: 'empty'
+},
+resolve: {
+  root: [
+    path.resolve('./front/'),
+    path.resolve('./src/'),
+    path.resolve('./node_modules/')
+  ]
 }
 }

@@ -3,13 +3,14 @@
   "description": "application created by thinkjs",
   "version": "1.0.0",
   "scripts": {
-    "start": "webpack --watch --progress & node www/development.js",
+    "start": "webpack --watch --progress webpack.production.config.js & node www/production.js",
     "compile": "babel --presets es2015-loose,stage-1 --plugins transform-runtime src/ --out-dir app/ --source-maps",
     "watch-compile": "node -e \"console.log('<npm run watch-compile> no longer need, use <npm start> command direct.');console.log();\"",
-    "watch": "npm run watch-compile"
+    "watch": "npm run watch-compile",
+    "start-dev": "webpack --watch --progress & node www/development.js"
   },
   "dependencies": {
-    "app-bundle-info": "^0.2.1",
+    "aws-sdk": "^2.6.4",
     "babel-cli": "6.x.x",
     "babel-eslint": "^4.1.8",
     "babel-loader": "^6.2.4",

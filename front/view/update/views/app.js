@@ -3,15 +3,12 @@ import React, {Component} from 'react';
 import {deepOrange500, green700, blue50} from 'material-ui/styles/colors';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton/IconButton';
 import ContentFilter from 'material-ui/svg-icons/content/filter-list';
 import {Router, Route, Link, IndexLink} from 'react-router'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import CommunicationCall from 'material-ui/svg-icons/communication/call';
@@ -22,24 +19,12 @@ import CommunicationEmail from 'material-ui/svg-icons/communication/email';
 import AccountBox from 'material-ui/svg-icons/action/account-box';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import AccessTime from 'material-ui/svg-icons/device/access-time';
-
-import Home from './home';
 import s from './app.style';
-import {userAction} from '../../../actions';
+import {userAction, titleAction} from 'actions';
 import { connect } from 'react-redux';
-import {request, str} from '../../../tools';
+import {request, str} from 'tools';
 import Drawer from 'material-ui/Drawer';
-
-
-const muiTheme = getMuiTheme({
-  palette: {
-    accent1Color: green700,
-  },
-  appBar: {
-      color: green700
-  }
-});
-
+import {Page} from 'components';
 class App extends Component {
   constructor(props, context) {
     super(props, context);
@@ -48,12 +33,8 @@ class App extends Component {
       valueSingle: '1',
       title: '热更新',
       open: false,
+      loading: true,
     };
-    this.titleList = [
-        '首页',
-        '应用列表',
-        '添加应用',
-    ]
   }
 
   handleRequestClose() {
@@ -88,8 +69,11 @@ class App extends Component {
     request('/home/getuser',
         {},
         (res) => {
+            console.log(this.props.titleReducer);
             if (res.userInfo) {
-              console.log(str.date(res.userInfo.last_login_time).format('y-m-d h:i:s'));
+                this.setState({
+                    loading: false
+                })
                 this.props.set(res.userInfo);
             } else {
                 //代表未登录
@@ -124,7 +108,6 @@ class App extends Component {
   handleChangeSingle(event, value){
       this.setState({
           valueSingle: value,
-          title: this.titleList[value-1],
       });
   }
 
@@ -190,16 +173,18 @@ class App extends Component {
   render() {
       let userInfo = this.props.userReducer;
     return (
-        <MuiThemeProvider muiTheme={muiTheme}>
+        <Page
+            loading={this.state.loading}
+        >
           <div style={s.container}>
               <AppBar
-                  title={this.state.title}
+                  title={this.props.titleReducer.title}
                   iconClassNameRight='muidocs-icon-navigation-expand-more'
                   onLeftIconButtonTouchTap={() => this._toggolMenu()}
                   iconElementLeft={this._renderMenu()}
                   iconElementRight={this._renderRightElement()}
               ></AppBar>
-            {this.props.children || <Home></Home>}
+            {this.props.children}
             <Drawer
               docked={false}
               width={300}
@@ -267,7 +252,7 @@ class App extends Component {
 
             </Drawer>
           </div>
-        </MuiThemeProvider>
+      </Page>
     );
   }
 
@@ -300,7 +285,8 @@ class App extends Component {
 
 let setState = (state) => {
     return {
-        userReducer: state.userReducer
+        userReducer: state.userReducer,
+        titleReducer: state.titleReducer,
     }
 };
 
@@ -309,6 +295,7 @@ let setAction = (dispatch) => {
         logout: () => {dispatch(userAction.logout())},
         login: (userInfo) => dispatch(userAction.login(userInfo)),
         set: (userInfo) => dispatch(userAction.set(userInfo)),
+        setTitle: (title) => dispatch(titleAction.setTitle(title))
     }
 }
 module.exports = connect(setState, setAction)(App);

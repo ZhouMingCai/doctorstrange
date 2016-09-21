@@ -1,10 +1,8 @@
 'use strict'
 
 import React, {Component} from 'react';
-import {str, request} from '../../../../../tools';
+import {str, request} from 'tools';
 import {deepOrange500, green700, blue50} from 'material-ui/styles/colors';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import Book from 'material-ui/svg-icons/action/book';
@@ -16,7 +14,9 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import {Router, Route, Link, IndexLink} from 'react-router'
 import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
 import FlatButton from 'material-ui/FlatButton';
-
+import {Page} from 'components';
+import {titleAction} from 'actions';
+import { connect } from 'react-redux';
 
 const s = {
     addBtnPosition: {
@@ -29,15 +29,16 @@ const s = {
         backgroundColor: '#e5e5e5',
         marginBottom: '2px'
     },
+    pageBottom: {
+        textAlign: 'center',
+        padding: '5px'
+    },
+    pageNumBtn: {
+        width: 10,
+    }
 }
 
-const muiTheme = getMuiTheme({
-  palette: {
-    accent1Color: deepOrange500,
-  },
-});
-
-module.exports = class VersionList extends Component{
+class VersionList extends Component{
     constructor(props){
         super(props);
 
@@ -47,21 +48,26 @@ module.exports = class VersionList extends Component{
             appId: this.props.params.appId,
             dataList: [],
             totalPage: 0,
-            count: 0
+            count: 0,
+            loading: false
         }
 
     }
 
     componentDidMount() {
+        this.props.setTitle('版本列表');
         this._getData();
     }
 
 
-    _getData(){
+    _getData(num){
+        this.setState({
+            loading: true
+        })
         request(
             '/update/version/getversionlistpage',
             {
-                pageNum: this.state.pageNum,
+                pageNum: num ? num : this.state.pageNum,
                 limit: this.state.limit,
                 appId: this.state.appId
             },
@@ -71,7 +77,8 @@ module.exports = class VersionList extends Component{
                     pageNum: res.currentPage,
                     limit: res.numsPerPage,
                     count: res.count,
-                    totalPage: res.totalPages
+                    totalPage: res.totalPages,
+                    loading: false
                 });
             },
             (err) => {
@@ -81,8 +88,10 @@ module.exports = class VersionList extends Component{
     }
     render(){
         return (
-            <MuiThemeProvider muiTheme={muiTheme}>
-                <div>
+            <Page
+                loading={this.state.loading}
+            >
+                <div style={{textAlign: 'left'}}>
                     <List>
                         {this._renderItems()}
                     </List>
@@ -93,8 +102,7 @@ module.exports = class VersionList extends Component{
                         </FloatingActionButton>
                     </Link>
                 </div>
-
-            </MuiThemeProvider>
+            </Page>
         )
     }
 
@@ -102,22 +110,35 @@ module.exports = class VersionList extends Component{
     _renderPageNavigator(){
         return (
             <div style={s.pageBottom}>
+                <FlatButton
+                  label='上一页'
+                  secondary={true}
+                  disabled={this.state.pageNum == 1}
+                  onClick={() => this._getPageData(this.state.pageNum-1)}
+                />
                 {
-                    this.state.pageNum > 1?
-                    <FlatButton
-                      label='上一页'
-                    /> : null
+                    this._renderPageNum()
                 }
-                {
-                    this.state.pageNum < this.state.totalPage && this.state.pageNum > 0?
-                    <FlatButton
-                      label='下一页'
-                    /> : null
-                }
+                <FlatButton
+                  label='下一页'
+                  secondary={true}
+                  disabled={this.state.pageNum >= this.state.totalPage}
+                  onClick={() => this._getPageData(this.state.pageNum+1)}
+                 />
             </div>
         )
     }
 
+
+    _getPageData = (num) => {
+        this.setState({
+            pageNum: num,
+            loading: true
+        });
+
+        this._getData(num);
+
+    }
 
     _renderPageNum(){
         let elements = [];
@@ -126,9 +147,15 @@ module.exports = class VersionList extends Component{
             elements.push(
                 <FlatButton
                     label={i}
+                    secondary={true}
+                    disabled={this.state.pageNum == i}
+                    style={s.pageNumBtn}
+                    onClick={() => this._getPageData(i)}
                 ></FlatButton>
             )
+            i++;
         }
+        return elements;
     }
 
     _renderItems(){
@@ -157,6 +184,7 @@ module.exports = class VersionList extends Component{
                          primaryText='文件地址'
                          secondaryText={item.url}
                          leftIcon={<Location color={green700} />}
+                         onClick={() => this._downLoad(item.url)}
                        />,
                        <ListItem
                          key={3}
@@ -185,4 +213,21 @@ module.exports = class VersionList extends Component{
         }
     }
 
+    _downLoad = (url) => {
+        location.href='/update/download?path='+url;
+    }
+
 };
+
+let setState = (state) => {
+    return {
+        titleReducer: state.titleReducer,
+    }
+};
+
+let setAction = (dispatch) => {
+    return {
+        setTitle: (title) => dispatch(titleAction.setTitle(title))
+    }
+}
+module.exports = connect(setState, setAction)(VersionList);

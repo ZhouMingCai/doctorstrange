@@ -35,7 +35,7 @@ export default class extends think.controller.base {
 
    getMsg(msg){
        switch (msg) {
-         case 'USER_NOT_EXIST]':
+         case 'USER_NOT_EXIST':
              return '用户不存在!';
          case 'PASSWORD_ERROR':
              return '用户名或密码错误!';

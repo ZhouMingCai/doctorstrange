@@ -1,5 +1,5 @@
 import React from 'react'
-import {userAction} from '../../../../../actions';
+import {userAction, titleAction} from 'actions';
 import { connect } from 'react-redux';
 import FileUpload from 'react-fileupload';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -47,6 +47,9 @@ class AddApp extends React.Component {
         }
     }
 
+    componentDidMount() {
+        this.props.setTitle('添加应用');
+    }
     /**
      * 显示进度条
      * @method _showProgress
@@ -84,7 +87,7 @@ class AddApp extends React.Component {
         return (
           <div>
             <h2>AddApp</h2>
-            
+
           </div>
         )
     }
@@ -118,7 +121,8 @@ class AddApp extends React.Component {
 
 let setState = (state) => {
     return {
-        userReducer: state.userReducer
+        userReducer: state.userReducer,
+        titleReducer: state.titleReducer
     }
 };
 
@@ -127,6 +131,7 @@ let setAction = (dispatch) => {
         logout: () => {dispatch(userAction.logout())},
         login: (userInfo) => dispatch(userAction.login(userInfo)),
         set: (userInfo) => dispatch(userAction.set(userInfo)),
+        setTitle: (title) => dispatch(titleAction.setTitle(title))
     }
 }
 module.exports = connect(setState, setAction)(AddApp);

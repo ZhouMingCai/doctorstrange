@@ -1,30 +1,20 @@
 
 import React, {Component} from 'react';
-import {green500} from 'material-ui/styles/colors';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton/IconButton';
 import ContentFilter from 'material-ui/svg-icons/content/filter-list';
 import {Router, Route, Link, IndexLink} from 'react-router'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import Home from './home';
 import s from './app.style';
 import {userAction} from '../../../actions';
 import { connect } from 'react-redux'
+import {Page} from '../../../components';
 
 
-
-
-const muiTheme = getMuiTheme({
-  palette: {
-    accent1Color: green500,
-  },
-});
 
 module.exports = class App extends Component {
   constructor(props, context) {
@@ -121,7 +111,7 @@ module.exports = class App extends Component {
 
   render() {
     return (
-        <MuiThemeProvider muiTheme={muiTheme}>
+        <Page>
           <div style={s.container}>
               <AppBar
                   title={this.state.title}
@@ -133,7 +123,7 @@ module.exports = class App extends Component {
               ></AppBar>
           {this.props.children || <Home changeTitle={this._changeTitle.bind(this)}></Home>}
           </div>
-        </MuiThemeProvider>
+      </Page>
     );
   }
 }

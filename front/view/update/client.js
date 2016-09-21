@@ -9,7 +9,8 @@ import routes from './routes';
 
 import * as reducers from '../../reducers'
 const reducer = combineReducers({
-  ...reducers,
+  userReducer: reducers.userReducer,
+  titleReducer: reducers.titleReducer,
   routing: routerReducer
 });
 

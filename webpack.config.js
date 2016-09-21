@@ -77,4 +77,11 @@ module.exports = [{
 node: {
     child_process: 'empty',
 },
+resolve: {
+  root: [
+    path.resolve('./front/'),
+    path.resolve('./src/'),
+    path.resolve('./node_modules/')
+  ]
+}
 }, serverConfig]

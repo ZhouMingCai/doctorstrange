@@ -16,7 +16,7 @@ export default class extends think.model.base {
     async getVersionListPageByAppId(appId,  page = 0, limit = 10 ){
         let result = await this.page(page, limit).where({
           app_id: appId
-        }).countSelect();
+      }).order('id DESC').countSelect();
 
         /**
          * 查询兼容的原生版本号信息
@@ -63,22 +63,21 @@ export default class extends think.model.base {
      * 根据条件查询版本号
      * @method getVersionInfoByVersionInfo
      * @param  {[type]}                    appId           [description]
-     * @param  {[type]}                    miniContainerId [description]
      * @param  {[type]}                    major           [description]
      * @param  {[type]}                    minor           [description]
      * @param  {[type]}                    patch           [description]
      * @return {[type]}                                    [description]
      * @author jimmy
      */
-    async getVersionInfoByVersionInfo(appId, miniContainerId, major, minor, patch){
+    async getVersionInfoByVersionInfo(appId, major, minor, patch){
         return await this.where({
             app_id: appId,
-            min_container_version_id: miniContainerId,
             major: major,
             minor: minor,
             patch: patch,
         }).find();
     }
+
     /**
      * 添加js版本号
      * @method addVersion

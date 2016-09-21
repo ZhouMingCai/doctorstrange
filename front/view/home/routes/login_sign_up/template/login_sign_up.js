@@ -6,14 +6,14 @@ import ActionAssignmentInd from 'material-ui/svg-icons/action/assignment-ind';
 import ActionInput from 'material-ui/svg-icons/action/input';
 import {green800, green500, green600, green900} from 'material-ui/styles/colors';
 import RaisedButton from 'material-ui/RaisedButton';
-import {TextField} from '../../../../../components';
-import {request} from '../../../../../tools';
+import {TextField} from 'components';
+import {request} from 'tools';
 import { Router, hashHistory, IndexRoute, browserHistory} from 'react-router';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import {userAction} from '../../../../../actions';
+import {userAction} from 'actions';
 import { connect } from 'react-redux'
-
+import {Page} from 'components';
 
 class LoginSignUp extends Component {
     constructor(props){
@@ -28,8 +28,8 @@ class LoginSignUp extends Component {
             errorMsg: '',
             errorMsgSign: '',
             showDialog: false,
+            loading: false
         }
-        console.log(props);
         this.timeout = 0;
     }
 
@@ -73,7 +73,8 @@ class LoginSignUp extends Component {
 
     _loginSubmitAction(){
         this.setState({
-            errorMsgSign: ''
+            errorMsgSign: '',
+            loading: true
         });
         if (this.state.userName && this.state.password) {
             request('/home/login/login',
@@ -82,16 +83,19 @@ class LoginSignUp extends Component {
                     password: this.state.password,
                 },
                 (res) => {
-                    console.log(res);
                     this.props.login(res.userInfo);
                     location.href = '/update/';
+                    this.setState({
+                        errorMsgSign: '',
+                        loading: false
+                    });
                 },
                 (err) => {
                     console.log(err);
                     this.setState({
                         errorMsg: err.errmsg,
+                        loading: false
                     });
-                    console.log(this.state.errorMsg);
                 }
             )
         } else {
@@ -103,7 +107,8 @@ class LoginSignUp extends Component {
 
     _signUpSubmitAction(){
         this.setState({
-            errorMsg: ''
+            errorMsg: '',
+            loading: true,
         });
         if (this.state.userName && this.state.password && this.state.password == this.state.comfirmPass && this.state.email && this.state.phone) {
             request('/home/register',
@@ -120,6 +125,7 @@ class LoginSignUp extends Component {
                         email: '',
                         phone: '',
                         comfirmPass: '',
+                        loading: false,
                         showDialog: true,
                     })
                 },
@@ -127,6 +133,7 @@ class LoginSignUp extends Component {
                     console.log(err);
                     this.setState({
                         errorMsgSign: err.errmsg,
+                        loading: false
                     });
                 }
             )
@@ -135,7 +142,9 @@ class LoginSignUp extends Component {
 
     render() {
       return (
-        <div style={s.container}>
+        <Page
+            loading={this.state.loading}
+        >
             <div style={s.inputContainer}>
                 <Tabs
                     tabItemContainerStyle={s.tabItemContainerStyle}
@@ -277,7 +286,7 @@ class LoginSignUp extends Component {
                 </Tabs>
                 {this._renderDialog()}
             </div>
-        </div>
+        </Page>
       )
     }
 

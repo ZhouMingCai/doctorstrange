@@ -1,20 +1,10 @@
 import React, {Component} from 'react';
-import {green500} from 'material-ui/styles/colors';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import Toggle from 'material-ui/Toggle';
 import s from './home.style';
-import 'whatwg-fetch';
 import {Link} from 'react-router'
-
-const muiTheme = getMuiTheme({
-  palette: {
-    accent1Color: green500,
-  },
-});
-
+import {Page} from '../../../components';
 
 module.exports = class Home extends Component {
     constructor(props){
@@ -25,7 +15,9 @@ module.exports = class Home extends Component {
         let registeryElement = <Link to='loginOrSiginUp/signUp' style={s.link} onClick={() => this.props.changeTitle(5)}>注册</Link>;
 
         return (
-            <MuiThemeProvider muiTheme={muiTheme}>
+            <Page
+                loading={false}
+            >
                 <div style={s.container}>
                     <div style={s.content}>
                         <a style={s.logo} href='http://www.songxiaocai.com'>
@@ -46,7 +38,7 @@ module.exports = class Home extends Component {
                         ></RaisedButton>
                     </div>
                 </div>
-            </MuiThemeProvider>
+            </Page>
         )
     }
 }

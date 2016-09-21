@@ -10,8 +10,8 @@ import routes from './routes';
 import * as reducers from '../../reducers'
 
 const reducer = combineReducers({
-  ...reducers,
-  routing: routerReducer
+    userReducer: reducers.userReducer,
+    routing: routerReducer
 });
 
 const store = createStore(

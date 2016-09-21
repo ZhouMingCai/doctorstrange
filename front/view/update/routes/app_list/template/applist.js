@@ -1,20 +1,12 @@
 import React, {Component} from 'react';
-import {deepOrange500} from 'material-ui/styles/colors';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import {request, str} from '../../../../../tools';
+import {request, str} from 'tools';
 import {GridList, GridTile} from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 import {Router, Route, Link, IndexLink} from 'react-router'
-
-
-
-const muiTheme = getMuiTheme({
-  palette: {
-    accent1Color: deepOrange500,
-  },
-});
+import {Page} from 'components';
+import {titleAction} from 'actions';
+import { connect } from 'react-redux';
 
 const s = {
   root: {
@@ -31,16 +23,18 @@ const s = {
   },
 };
 
-module.exports = class AppList extends Component {
+class AppList extends Component {
     constructor(props){
         super(props);
         this.state = {
             dataList: [],
+            loading: true
         };
 
     }
 
     componentDidMount() {
+        this.props.setTitle('应用列表')
         this._getData();
     }
 
@@ -50,7 +44,8 @@ module.exports = class AppList extends Component {
             {},
             (res) => {
                 this.setState({
-                    dataList: res.data
+                    dataList: res.data,
+                    loading: false
                 })
             },
             (err) => {
@@ -63,7 +58,9 @@ module.exports = class AppList extends Component {
 
     render(){
         return (
-            <MuiThemeProvider muiTheme={muiTheme}>
+            <Page
+                loading={this.state.loading}
+            >
                 <GridList
                     cellHeight={200}
                     style={s.gridList}
@@ -72,7 +69,7 @@ module.exports = class AppList extends Component {
                         this._renderItems()
                     }
                 </GridList>
-            </MuiThemeProvider>
+            </Page>
         )
     }
 
@@ -101,3 +98,16 @@ module.exports = class AppList extends Component {
         console.log(item);
     }
 }
+
+let setState = (state) => {
+    return {
+        titleReducer: state.titleReducer,
+    }
+};
+
+let setAction = (dispatch) => {
+    return {
+        setTitle: (title) => dispatch(titleAction.setTitle(title))
+    }
+}
+module.exports = connect(setState, setAction)(AppList);

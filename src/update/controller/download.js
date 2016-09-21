@@ -14,6 +14,9 @@ export default class extends Base {
  */
   async indexAction(){
       let pathParam = this.post('path'); //获取客户端请求的文件
+      if (!pathParam) {
+          pathParam = this.get('path');
+      }
       let filePath = bundlePath + pathParam;
       this.download(filePath);//下载文件
   }

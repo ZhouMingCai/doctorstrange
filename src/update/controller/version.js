@@ -1,6 +1,7 @@
 'use strict';
 
 import Base from './base.js';
+import {obj} from '../../tools';
 
 export default class extends Base {
 
@@ -17,20 +18,12 @@ export default class extends Base {
       this.success(result);
   }
 
-  async addAction(){
-      let data = {
-          major: '1',
-          minor: '0',
-          patch: '0',
-          url: '/index.ios.bundle',
-          is_relative: true,
-          min_container_version_id: '1'
-      };
-      let result = await this.model('version').add(data);
-      this.success(result);
-  }
-
-
+  /**
+   * 获取当前app的所有版本号
+   * @method getversionlistpageAction
+   * @return {[type]}                 [description]
+   * @author jimmy
+   */
   async getversionlistpageAction(){
       let isLogin = await this.isLogin();
       if (isLogin) {
@@ -76,16 +69,13 @@ export default class extends Base {
 
       if (data && data.length > 0) {
           //获取原生app版本信息
-          let containerVersion = await this.model('container_version').where({
-              id: data[0].min_container_version_id,
-          }).select();
-
+          let containerVersion = await this.model('container_version').getVersionInfoById(data[0].min_container_version_id);
           if (!containerVersion || containerVersion.length <= 0) {
               this.fail({
                   errorMessage: '无该记录',
               });
           }
-          result = this.formatVersion(data[0], containerVersion[0]);
+          result = this.formatVersion(data[0], containerVersion);
 
       } else {
           this.fail({
@@ -94,6 +84,28 @@ export default class extends Base {
       }
       //返回结果
       this.json(result);
+  }
+
+  /**
+   * 查询当前的js版本号是否存在
+   * @method isversionexistAction
+   * @return {[type]}             [description]
+   * @author jimmy
+   */
+  async isversionexistAction(){
+      let appId = this.post('appId');
+      let major = this.post('major');
+      let minor = this.post('minor');
+      let patch = this.post('patch');
+
+      let result = await this.model('version').getVersionInfoByVersionInfo(appId, major, minor, patch);
+
+      if (obj.objIsEmpty(result)) {
+          this.success(false);
+      } else {
+          this.success(true);
+      }
+
   }
 
   /**

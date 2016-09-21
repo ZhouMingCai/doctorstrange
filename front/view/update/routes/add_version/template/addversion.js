@@ -1,7 +1,8 @@
 'use strict';
 
 import React, { Component } from 'react'
-import {request, str} from '../../../../../tools';
+import {request, str} from 'tools';
+import {Page} from 'components';
 import {
   Step,
   Stepper,
@@ -10,9 +11,7 @@ import {
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import ExpandTransition from 'material-ui/internal/ExpandTransition';
-import TextField from 'material-ui/TextField';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import {TextField} from 'components';
 import {deepOrange500, green700, blue500, orange500} from 'material-ui/styles/colors';
 import Paper from 'material-ui/Paper';
 import FileUpload from 'react-fileupload';
@@ -22,7 +21,8 @@ import MenuItem from 'material-ui/MenuItem';
 import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
 import {Router, Route, Link, IndexLink} from 'react-router'
-
+import {titleAction} from 'actions';
+import { connect } from 'react-redux';
 
 
 const s = {
@@ -65,17 +65,11 @@ const s = {
         whidth: '100%',
         height: '100%',
         textAlign: 'center',
+    },
+    errmsg: {
+        color: 'red'
     }
 }
-
-const muiTheme = getMuiTheme({
-    palette: {
-      accent1Color: green700,
-      primary1Color: green700,
-    },
-});
-
-const fileReader = new FileReader();
 
 class AddVersion extends Component {
 
@@ -94,7 +88,9 @@ class AddVersion extends Component {
             jsPatch: '',
             miniContainerId: '',
             fileName: '',
-            modalOpen: false
+            modalOpen: false,
+            errmsg: '',
+            showErrmsg: false,
         }
 
         this.options = {
@@ -118,12 +114,20 @@ class AddVersion extends Component {
 
           },
           uploadSuccess: this._uploadSuccess,
-          uploadError: (err) => {
-              alert(err.errmsg)
-          },
-          uploadFail: (res)=> {
-              alert(err.errmsg)
-          }
+          uploadError: this._uploadError,
+          uploadFail: this._uploadError,
+          beforeUpload: this._beforeUpload,
+        }
+    }
+
+    _uploadError = (err) => {
+        if (err.errno != 0) {
+            console.log(err);
+            this.setState({
+                errmsg: err.data.errmsg,
+                completed: completed,
+                pageLoading: false,
+            });
         }
     }
 
@@ -131,9 +135,14 @@ class AddVersion extends Component {
         if (res.errno == 0) {
             this.setState({
                 errmsg: res.data.errmsg,
-                modalOpen: true
+                modalOpen: true,
+                pageLoading: false,
             });
         }
+    }
+
+    _beforeUpload = () => {
+
     }
 
     /**
@@ -148,6 +157,7 @@ class AddVersion extends Component {
         if (completed > 100) {
             this.setState({
                 completed: 100,
+                pageLoading: true,
             })
         } else {
             this.setState({
@@ -158,6 +168,7 @@ class AddVersion extends Component {
     }
 
     componentDidMount() {
+        this.props.setTitle('上传新版本');
         this._getData();
     }
 
@@ -174,7 +185,10 @@ class AddVersion extends Component {
                 });
             },
             (err) => {
-                console.log(err);
+                this.setState({
+                    pageLoading: false,
+                    errmsg: err.errorMsg? err.errorMsg : '访问出错了，请重试！',
+                });
             }
         )
     }
@@ -186,6 +200,7 @@ class AddVersion extends Component {
         loading: false,
         stepIndex: this.state.stepIndex + 1,
         finished: this.state.stepIndex >= 2,
+        errmsg: ''
       }));
     }
   }
@@ -210,10 +225,20 @@ class AddVersion extends Component {
       this.dummyAsync(() => this.setState({
         loading: false,
         stepIndex: stepIndex - 1,
+        errmsg: ''
       }));
     }
   }
 
+  /**
+   * 选择原生版本号
+   * @method
+   * @param  {[type]} event [description]
+   * @param  {[type]} index [description]
+   * @param  {[type]} value [description]
+   * @return {[type]}       [description]
+   * @author jimmy
+   */
   _handleVersionSelect = (event, index, value) => {
       this.options.param.miniContainerId = value;
       this.setState({
@@ -221,66 +246,155 @@ class AddVersion extends Component {
       });
   }
 
+  /**
+   * 版本号变更
+   * @method _onTextChange
+   * @param  {[type]}      type [description]
+   * @param  {[type]}      res  [description]
+   * @return {[type]}           [description]
+   * @author jimmy
+   */
   _onTextChange(type, res){
       switch (type) {
             case 'jsMajor':
-                this.options.param.jsMajor = res.target.value;
+                this.options.param.jsMajor = res;
                 this.setState({
-                    jsMajor: res.target.value
+                    jsMajor: res
                 });
               break;
             case 'jsMinor':
-                this.options.param.jsMinor = res.target.value;
+                this.options.param.jsMinor = res;
                 this.setState({
-                    jsMinor: res.target.value
+                    jsMinor: res
                 });
                 break;
             case 'jsPatch':
-                this.options.param.jsPatch = res.target.value;
+                this.options.param.jsPatch = res;
                 this.setState({
-                    jsPatch: res.target.value
+                    jsPatch: res
                 });
                 break;
       }
   }
 
+  _checkVersion = () => {
+      if (str.isEmpty(this.state.jsMajor) || str.isEmpty(this.state.jsMinor)|| str.isEmpty(this.state.jsPatch)) {
+          this.setState({
+              errmsg: '请填写完整版本信息'
+          });
+          return;
+      } else {
+          this.setState({
+              pageLoading: true,
+          });
+          request(
+              '/update/version/isversionexist',
+              {
+                  appId: this.state.appId,
+                  major: this.state.jsMajor,
+                  minor: this.state.jsMinor,
+                  patch: this.state.jsPatch
+              },
+              (res) => {
+                  if (res) {
+                      this.setState({
+                          errmsg: '该版本已存在！请填写另外一个版本号',
+                          pageLoading: false,
+                      });
+                  } else {
+                      this.setState({
+                          pageLoading: false,
+                          errmsg: '',
+                      });
+                      this.handleNext();
+                  }
+              },
+              (err) => {
+                  this.setState({
+                      pageLoading: false,
+                      errmsg: err.errorMsg? err.errorMsg : '访问出错了，请重试！',
+                  });
+              }
+          )
+      }
+
+  }
+
+  _checkContainer = () => {
+      if (this.state.selectVersion) {
+          this.handleNext();
+      } else {
+          this.setState({
+              errmsg: '请选择最小兼容原生版本号',
+          });
+      }
+  }
+
+  /**
+   * 渲染每一步的内容
+   * @method getStepContent
+   * @param  {[type]}       stepIndex [description]
+   * @return {[type]}                 [description]
+   * @author jimmy
+   */
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
         return (
             <div style={s.step}>
-                <TextField
-                   floatingLabelText='主版本号'
-                   hintText='请填写主版本号'
-                   floatingLabelStyle={s.floatingLabelStyle}
-                   floatingLabelFocusStyle={s.floatingLabelFocusStyle}
-                   errorStyle={s.errorStyle}
-                   type='number'
-                   value={this.state.jsMajor}
-                   onChange={(res)=>this._onTextChange('jsMajor', res)}
-                 />
-                <br/>
-                 <TextField
-                    floatingLabelText='子版本号'
-                    hintText='请填写子版本号'
-                    floatingLabelStyle={s.floatingLabelStyle}
-                    floatingLabelFocusStyle={s.floatingLabelFocusStyle}
-                    errorStyle={s.errorStyle}
-                    type='number'
-                    value={this.state.jsMinor}
-                    onChange={(res)=>this._onTextChange('jsMinor', res)}
+                <div>
+                    <TextField
+                       floatingLabelText='主版本号'
+                       hintText='请填写主版本号'
+                       floatingLabelStyle={s.floatingLabelStyle}
+                       floatingLabelFocusStyle={s.floatingLabelFocusStyle}
+                       errorStyle={s.errorStyle}
+                       type='number'
+                       defaultValue={this.state.jsMajor}
+                       onChange={(res)=>this._onTextChange('jsMajor', res)}
+                       regexp='^[0-9]'
+                       errorText='请输入正确的版本号'
+                     />
+                </div>
+                <div>
+                    <TextField
+                       floatingLabelText='子版本号'
+                       hintText='请填写子版本号'
+                       floatingLabelStyle={s.floatingLabelStyle}
+                       floatingLabelFocusStyle={s.floatingLabelFocusStyle}
+                       errorStyle={s.errorStyle}
+                       type='number'
+                       defaultValue={this.state.jsMinor}
+                       onChange={(res)=>this._onTextChange('jsMinor', res)}
+                       regexp='^[0-9]'
+                       errorText='请输入正确的版本号'
+                     />
+                </div>
+                <div>
+                    <TextField
+                       floatingLabelText='修正版本号'
+                       hintText='请填修正版本号'
+                       floatingLabelStyle={s.floatingLabelStyle}
+                       floatingLabelFocusStyle={s.floatingLabelFocusStyle}
+                       errorStyle={s.errorStyle}
+                       type='number'
+                       defaultValue={this.state.jsPatch}
+                       onChange={(res)=>this._onTextChange('jsPatch', res)}
+                       regexp='^[0-9]'
+                       errorText='请输入正确的版本号'
+                     />
+                </div>
+                <h5>
+                    上述信息都是必填信息，用于标识当前您要上传的jsbundle版本号
+                </h5>
+                <h4 style={s.errmsg}>{this.state.errmsg}</h4>
+                <div style={{marginTop: 24, marginBottom: 12}}>
+                  <RaisedButton
+                    label='下一步'
+                    primary={true}
+                    onTouchTap={this._checkVersion}
                   />
-                  <br/>
-                  <TextField
-                     floatingLabelText='修正版本号'
-                     hintText='请填修正版本号'
-                     floatingLabelStyle={s.floatingLabelStyle}
-                     floatingLabelFocusStyle={s.floatingLabelFocusStyle}
-                     errorStyle={s.errorStyle}
-                     type='number'
-                     value={this.state.jsPatch}
-                     onChange={(res)=>this._onTextChange('jsPatch', res)}
-                   />
+                </div>
            </div>
         );
         break;
@@ -309,12 +423,28 @@ class AddVersion extends Component {
                         })
                     }
                 </SelectField>
+                <h5>
+                    选择当前js兼容的最小原生版本号
+                </h5>
+                <h4 style={s.errmsg}>{this.state.errmsg}</h4>
+                <div style={{marginTop: 24, marginBottom: 12}}>
+                  <FlatButton
+                    label='上一步'
+                    onTouchTap={this.handlePrev}
+                    style={{marginRight: 12}}
+                  />
+                  <RaisedButton
+                    label='下一步'
+                    primary={true}
+                    onTouchTap={this._checkContainer}
+                  />
+                </div>
               </div>
             );
             break;
       case 2:
         return (
-          <p>
+          <div>
               <TextField
                   disabled={true}
                   value={this.state.fileName}
@@ -335,7 +465,7 @@ class AddVersion extends Component {
                       disableTouchRipple={true}
                       disableFocusRipple={true}
                       style={{margin: 12, marginRight: 6}}
-                      label='上传'
+                      label='完成'
                       ></RaisedButton>
               </FileUpload>
               <LinearProgress
@@ -344,7 +474,19 @@ class AddVersion extends Component {
                   max={this.state.max}
                   min={0}
                   ></LinearProgress>
-          </p>
+              <h5>
+                  上传你打好的最新程序包到服务器，我们会将其中的jsbundle提取出来，用于热更新使用！
+              </h5>
+              <h4 style={s.errmsg}>{this.state.errmsg}</h4>
+              <div style={{marginTop: 24, marginBottom: 12}}>
+                <FlatButton
+                  label='上一步'
+                  onTouchTap={this.handlePrev}
+                  style={{marginRight: 12}}
+                  primary={true}
+                />
+              </div>
+          </div>
         );
       default:
         return 'You\'re a long way from home sonny jim!';
@@ -375,19 +517,6 @@ class AddVersion extends Component {
     return (
       <div style={s.contentStyle}>
         {this.getStepContent(stepIndex)}
-        <div style={{marginTop: 24, marginBottom: 12}}>
-          <FlatButton
-            label='上一步'
-            disabled={stepIndex === 0}
-            onTouchTap={this.handlePrev}
-            style={{marginRight: 12}}
-          />
-          <RaisedButton
-            label={stepIndex === 2 ? '完成' : '下一步'}
-            primary={true}
-            onTouchTap={this.handleNext}
-          />
-        </div>
       </div>
     );
   }
@@ -409,45 +538,37 @@ class AddVersion extends Component {
         ,
         ];
         return (
-            <MuiThemeProvider muiTheme={muiTheme}>
-                {
-                    this.state.pageLoading?
-                    <div style={s.loading}>
-                        <CircularProgress size={2} style={s.pageLoading}/>
-                    </div>
-                    :
-                    <div style={s.container}>
-                        <Stepper activeStep={this.state.stepIndex} style={s.stepper}>
-                          <Step>
-                            <StepLabel>填写版bundle本号</StepLabel>
-                          </Step>
-                          <Step>
-                            <StepLabel>选择兼容的最小的原生app版本号</StepLabel>
-                          </Step>
-                          <Step>
-                            <StepLabel>上传jsbundle并保存</StepLabel>
-                          </Step>
-                        </Stepper>
-                        <ExpandTransition loading={this.state.loading} open={true}>
-                          {this.renderContent()}
-                        </ExpandTransition>
-                        <Dialog
-                          title='提示'
-                          actions={actions}
-                          modal={false}
-                          open={this.state.modalOpen}
-                          onRequestClose={() => this.setState({
-                              modalOpen: false
-                          })}
-                        >
-                          操作成功！
-                       </Dialog>
-                     </div>
-                }
-
-
-
-            </MuiThemeProvider>
+            <Page
+                loading={this.state.pageLoading}
+            >
+            <div style={s.container}>
+                <Stepper activeStep={this.state.stepIndex} style={s.stepper}>
+                  <Step>
+                    <StepLabel>填写版bundle本号</StepLabel>
+                  </Step>
+                  <Step>
+                    <StepLabel>选择兼容的最小的原生app版本号</StepLabel>
+                  </Step>
+                  <Step>
+                    <StepLabel>上传最新的app并保存</StepLabel>
+                  </Step>
+                </Stepper>
+                <ExpandTransition loading={this.state.loading} open={true}>
+                  {this.renderContent()}
+                </ExpandTransition>
+                <Dialog
+                  title='提示'
+                  actions={actions}
+                  modal={false}
+                  open={this.state.modalOpen}
+                  onRequestClose={() => this.setState({
+                      modalOpen: false
+                  })}
+                >
+                  操作成功！
+               </Dialog>
+               </div>
+            </Page>
         )
     }
 
@@ -455,5 +576,15 @@ class AddVersion extends Component {
 
     }
 }
+let setState = (state) => {
+    return {
+        titleReducer: state.titleReducer,
+    }
+};
 
-module.exports = AddVersion
+let setAction = (dispatch) => {
+    return {
+        setTitle: (title) => dispatch(titleAction.setTitle(title))
+    }
+}
+module.exports = connect(setState, setAction)(AddVersion);
