@@ -3,3 +3,5 @@ www/static/dist/*
 runtime/*
 node_modules/*
 app/*
+dist/*
+www/bundle/*
