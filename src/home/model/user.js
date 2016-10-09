@@ -55,7 +55,8 @@ export default class extends think.model.base {
       user_name: usertext,
       email: usertext,
       phone: usertext,
-      _logic: 'OR'
+      _logic: 'OR',
+
     }).find();
 
     if (think.isEmpty(user)) {
