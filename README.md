@@ -1,7 +1,6 @@
-
 # hot-update
 
-hot update server Application created by CJH
+a hot update server Application created by JimmyDaddy
 
 ## Install dependencies
 
