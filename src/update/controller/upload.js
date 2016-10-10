@@ -5,6 +5,9 @@ import fs from 'fs';
 import path from 'path';
 import {jsbundlefinder, obj} from '../../tools';
 import md5 from 'js-md5';
+import bsdiff from 'node-bsdiff';
+
+let bundlePath = think.RESOURCE_PATH+'/bundle/';
 
 export default class extends Base {
 
@@ -73,7 +76,11 @@ export default class extends Base {
                                     isRelative: 1,
                                     bundleId: appBundleId
                                 }
-                                let result = await this.model('version').addVersion(insertData);
+                                let versionModel = this.model('version');
+
+                                let result = yield versionModel.transaction(async () => {
+                                    return await versionModel.addVersion(insertData);
+                                });
                                 if (result) {
                                     this.success({
                                         errmsg: '添加成功！'
@@ -112,4 +119,41 @@ export default class extends Base {
 
   }
 
+  /**
+   * 根据当前上传的bundle与之前所有的bundle进行对比，得到差分包
+   * @method diffPatch
+   * @param  {[type]}  currId [description]
+   * @param  {[type]}  appId  [description]
+   * @return {[type]}         [description]
+   * @author jimmy
+   */
+  async diffPatch(currId, appId){
+      //获取当前版本的文件信息
+      let currVersionInfo = await this.model('version').getVersionInfoById(currId);
+
+      let curBundlePath = bundlePath+currVersionInfo.url;
+
+      fs.readFile(bundlePath, async (err, data) => {
+          if (err) {
+              return false;
+          } else {
+              let prevVersions = await this.model('version').getVersionListByAppId(appId);
+              if (!obj.arrIsEmpty(prevVersions)) {
+                  let tempBundlePath = '';
+                  prevVersions.map(async (item) => {
+                      tempBundlePath = bundlePath+item.url;
+                      fs.readFile(tempBundlePath, async (err, bundleData) => {
+                         if (err) {
+                             return false;
+                         } else {
+                             let pacth = bsdiff.diff(data, bundleData);
+
+                         }
+                      });
+                  });
+              }
+          }
+      });
+    //   bsdiff.diff();
+  }
 }

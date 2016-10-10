@@ -15,7 +15,8 @@ export default class extends think.model.base {
      */
     async getVersionListPageByAppId(appId,  page = 0, limit = 10 ){
         let result = await this.page(page, limit).where({
-          app_id: appId
+          app_id: appId,
+          state: 1
       }).order('id DESC').countSelect();
 
         /**
@@ -75,6 +76,7 @@ export default class extends think.model.base {
             major: major,
             minor: minor,
             patch: patch,
+            state: 1
         }).find();
     }
 
@@ -93,7 +95,49 @@ export default class extends think.model.base {
           patch: data.patch,
           bundle_id: data.bundleId,
           is_relative: data.isRelative,
-          url: data.url
+          url: data.url,
+          state: 1
         });
+    }
+
+    /**
+     * 如果使用增量更新还是需要定时对不必要的版本进行清除
+     * @method deleteVersion
+     * @param  {[type]}      id [description]
+     * @return {[type]}         [description]
+     * @author jimmy
+     */
+    async deleteVersion(id){
+        return await this.update(
+            {state: 0},
+            {where: {id: id}}
+        )
+    }
+
+    /**
+     * 获取版本列表
+     * @method getVersionListByAppId
+     * @param  {[type]}              appId [description]
+     * @return {[type]}                    [description]
+     * @author jimmy
+     */
+    async getVersionListByAppId(appId){
+        return await this.where({
+            app_id: appId,
+            state: 1
+        }).select();
+    }
+
+    /**
+     * 根据id获取版本信息
+     * @method getVersionInfoById
+     * @param  {[type]}           id [description]
+     * @return {[type]}              [description]
+     * @author jimmy
+     */
+    async getVersionInfoById(id){
+        return await this.where({
+            id: id
+        }).find();
     }
 }

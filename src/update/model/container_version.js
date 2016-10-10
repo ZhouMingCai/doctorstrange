@@ -16,7 +16,8 @@ export default class extends think.model.base {
      */
     async getContainerIdByIds(ids){
         return await this.where({
-            id: ['IN', ids]
+            id: ['IN', ids],
+            state: 1
         }).select();
     }
 
@@ -30,6 +31,7 @@ export default class extends think.model.base {
     async getVersionListByAppId(appId){
         return await this.where({
             app_id: appId,
+            state: 1
         }).select();
     }
 
@@ -43,6 +45,24 @@ export default class extends think.model.base {
     async getVersionInfoById(id){
         return await this.where({
             id: id,
+            state: 1
         }).find();
+    }
+
+    /**
+     * 添加原生版本
+     * @method addContainerVersion
+     * @param  {[type]}            data [description]
+     * @author jimmy
+     */
+    aysnc addContainerVersion(data){
+        return await this.add({
+          app_id: data.appId,
+          major: data.major,
+          minor: data.minor,
+          patch: data.patch,
+          bundle_id: data.bundleId,
+          state: 1
+        });
     }
 }

@@ -69,7 +69,6 @@ class App extends Component {
     request('/home/getuser',
         {},
         (res) => {
-            console.log(this.props.titleReducer);
             if (res.userInfo) {
                 this.setState({
                     loading: false

@@ -17,7 +17,8 @@ export default class extends think.model.base {
      */
     async getAppListByUserId(userId, page = 0, limit = 10){
         return await this.page(page, limit).where({
-          owner_id: userId
+          owner_id: userId,
+          state: 1
         }).countSelect();
     }
 
@@ -30,7 +31,8 @@ export default class extends think.model.base {
      */
     async getAppInfoById(appId){
         return await this.where({
-            id: appId
+            id: appId,
+            state: 1
         }).find();
     }
 }
