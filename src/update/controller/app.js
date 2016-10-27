@@ -14,9 +14,12 @@ export default class extends Base {
       let user = await this.getUser();
       let id = user.id;
       let result = await this.model('home/user').selectUserById(id);
+      console.log('ssss',result);
+      console.log('ssss',id);
       if (result == 'USER_NOT_EXIST') {
           this.fail(result);
       } else {
+          console.log(id);
           let dataList = await this.model('app').getAppListByUserId(id);
           console.log(dataList);
           this.success(dataList);

@@ -3,6 +3,7 @@
 import Base from './base.js';
 
 let bundlePath = think.RESOURCE_PATH+'/bundle/';
+let patchPath = think.RESOURCE_PATH+'/patch/';
 
 export default class extends Base {
 
@@ -13,12 +14,50 @@ export default class extends Base {
  * @author jimmy
  */
   async indexAction(){
-      let pathParam = this.post('path'); //获取客户端请求的文件
-      if (!pathParam) {
-          pathParam = this.get('path');
+      let versionId = this.post('versionId'); //获取客户端请求的文件
+      if (!versionId) {
+          versionId = this.get('versionId');
       }
-      let filePath = bundlePath + pathParam;
-      this.download(filePath);//下载文件
+
+      let patchId = this.post('patchId');
+      if (!patchId) {
+          patchId = this.get('patchId');
+      }
+
+      if (patchId) {
+          let patchData = await this.model('patch').getPatchbyId(patchId);
+          let patchFilePatch = patchPath+patchData.path;
+          await this.increasePatchDownloadNum(patchId);
+          this.download(patchFilePatch);//下载文件
+      } else {
+          let versionData = await this.model('version').getVersionInfoById(versionId);
+          let filePath = bundlePath + versionData.url;
+          await this.increaseDownloadNum(versionId);
+          this.download(filePath);//下载文件
+      }
+
+  }
+
+  /**
+   * 更新下载数据
+   * @method increaseDownloadNum
+   * @param  {[type]}            versionId [description]
+   * @return {[type]}                      [description]
+   * @author jimmy
+   */
+  async increaseDownloadNum(versionId){
+      return await this.model('version').where({id: versionId}).increment('download_num', 1);
+  }
+
+  /**
+   * 更新下载数据
+   * @method increasePatchDownloadNum
+   * @param  {[type]}                 patchId [description]
+   * @return {[type]}                         [description]
+   * @author jimmy
+   */
+  async increasePatchDownloadNum(patchId){
+      return await this.model('patch').where({id: patchId}).increment('download_num', 1);
   }
 
 }

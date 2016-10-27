@@ -11,4 +11,4 @@ var instance = new thinkjs({
   env: 'production'
 });
 
-instance.run(true);
+instance.run();

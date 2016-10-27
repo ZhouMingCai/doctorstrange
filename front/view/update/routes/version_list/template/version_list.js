@@ -9,6 +9,7 @@ import Book from 'material-ui/svg-icons/action/book';
 import BookBorder from 'material-ui/svg-icons/action/bookmark-border';
 import AccessTime from 'material-ui/svg-icons/device/access-time';
 import Location from 'material-ui/svg-icons/communication/location-on';
+import ConfirmationNum from 'material-ui/svg-icons/notification/confirmation-number';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import {Router, Route, Link, IndexLink} from 'react-router'
@@ -144,13 +145,14 @@ class VersionList extends Component{
         let elements = [];
         let i = 1;
         while (i <= this.state.totalPage) {
+            let temp = i;
             elements.push(
                 <FlatButton
                     label={i}
                     secondary={true}
                     disabled={this.state.pageNum == i}
                     style={s.pageNumBtn}
-                    onClick={() => this._getPageData(i)}
+                    onClick={() => this._getPageData(temp)}
                 ></FlatButton>
             )
             i++;
@@ -171,6 +173,13 @@ class VersionList extends Component{
                      primaryTogglesNestedList={true}
                      key={key}
                      nestedItems={[
+                         <ListItem
+                           key={0}
+                           style={s.listItemStyle}
+                           primaryText='下载次数'
+                           secondaryText={item.download_num? item.download_num : '0'}
+                           leftIcon={<ConfirmationNum color={green700} />}
+                         />,
                        <ListItem
                          key={1}
                          style={s.listItemStyle}

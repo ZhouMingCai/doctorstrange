@@ -55,7 +55,7 @@ export default class extends think.model.base {
      * @param  {[type]}            data [description]
      * @author jimmy
      */
-    aysnc addContainerVersion(data){
+    async addContainerVersion(data){
         return await this.add({
           app_id: data.appId,
           major: data.major,

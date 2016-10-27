@@ -58,6 +58,8 @@ export default class extends Base {
   async selectlatestAction(){
       //获取应用bundleId
       let bundleId = this.get('bundleId');
+      //获取设备版本号
+      let prevVersionId = this.get('versionId');
       //从数据库查询数据
       let data = await this.model('version').where({
           bundle_id: bundleId,
@@ -75,7 +77,18 @@ export default class extends Base {
                   errorMessage: '无该记录',
               });
           }
-          result = this.formatVersion(data[0], containerVersion);
+
+          //如果存在版本号
+          if (prevVersionId) {
+              let patch = await this.model('patch').getPatchInfo(data[0].id, prevVersionId);
+              if (!obj.objIsEmpty(patch)) {
+                  result = this.formatVersion(data[0], containerVersion, patch);
+              } else {
+                  result = this.formatVersion(data[0], containerVersion);
+              }
+          } else {
+              result = this.formatVersion(data[0], containerVersion);
+          }
 
       } else {
           this.fail({
@@ -109,21 +122,27 @@ export default class extends Base {
   }
 
   /**
-   * 格式化版本
+   * [formatVersion description]
    * @method formatVersion
    * @param  {[type]}      version          [description]
    * @param  {[type]}      containerVersion [description]
+   * @param  {[type]}      patch            [description]
    * @return {[type]}                       [description]
    * @author jimmy
    */
-  formatVersion(version, containerVersion){
-      return {
+  formatVersion(version, containerVersion, patch){
+
+      let versionData = {
           version: version.major.toString()+'.'+ version.minor.toString() +'.'+ version.patch.toString(),
           minContainerVersion: containerVersion.major.toString()+'.'+ containerVersion.minor.toString()+'.'+ containerVersion.patch,
-          url: {
-              url: version.url,
-              isRelative: version.is_relative == 1,
-          }
-      }
+          versionId: version.id,
+          isRelative: version.is_relative == 1,
+      };
+
+      patch && patch.id? versionData['patchId']=patch.id:null;
+      version.server_url? versionData['serverUrl']=version.server_url : null;
+      version.description? versionData['description'] : null;
+
+      return versionData;
   }
 }

@@ -78,13 +78,21 @@ export default class extends Base {
                                 }
                                 let versionModel = this.model('version');
 
-                                let result = yield versionModel.transaction(async () => {
+                                let result = await versionModel.transaction(async () => {
                                     return await versionModel.addVersion(insertData);
                                 });
+
                                 if (result) {
-                                    this.success({
-                                        errmsg: '添加成功！'
-                                    });
+                                    let ret1 = await this.diffPatch(result, appId);
+                                    if (ret1) {
+                                        this.success({
+                                            errmsg: '添加成功！'
+                                        });
+                                    } else {
+                                        this.fail({
+                                            errmsg: '生成差分包失败!'
+                                        });
+                                    }
                                 } else {
                                     this.fail({
                                         errmsg: '上传失败!'
@@ -127,33 +135,101 @@ export default class extends Base {
    * @return {[type]}         [description]
    * @author jimmy
    */
-  async diffPatch(currId, appId){
+  async diffPatch(curId, appId){
       //获取当前版本的文件信息
-      let currVersionInfo = await this.model('version').getVersionInfoById(currId);
+      let currVersionInfo = await this.model('version').getVersionInfoById(curId);
 
       let curBundlePath = bundlePath+currVersionInfo.url;
 
-      fs.readFile(bundlePath, async (err, data) => {
+      fs.readFile(curBundlePath, async (err, data) => {
           if (err) {
+              console.log(err);
               return false;
           } else {
+              //获取该app之前版本的所有bundle
               let prevVersions = await this.model('version').getVersionListByAppId(appId);
+              let insertDatas = [];
               if (!obj.arrIsEmpty(prevVersions)) {
                   let tempBundlePath = '';
-                  prevVersions.map(async (item) => {
+                  prevVersions.map((item) => {
+                      if (item.id == curId) {
+                          return;
+                      }
                       tempBundlePath = bundlePath+item.url;
-                      fs.readFile(tempBundlePath, async (err, bundleData) => {
-                         if (err) {
-                             return false;
-                         } else {
-                             let pacth = bsdiff.diff(data, bundleData);
+                      try{
+                          let bundleData = fs.readFileSync(tempBundlePath);
+                          //生成差分包
+                          let patch = bsdiff.diff(bundleData, data);
+                          //将生成的查分数据保存下来
+                          let uploadPath = think.RESOURCE_PATH + '/patch/'+item.bundle_id+'/';
+                          fs.exists(uploadPath, (exists) => {
+                              if (!exists) {
+                                  think.mkdir(uploadPath);
+                              }
+                          });
 
-                         }
-                      });
+                          let fileName = this.formatPatchName(item, currVersionInfo);
+
+                          try{
+                              fs.writeFileSync(uploadPath+'/'+fileName, patch);
+                          }catch(err){
+                              console.log(err);
+                              return false;
+                          };
+                          let exists = fs.existsSync(uploadPath+'/'+fileName);
+                          if (exists) {
+                              //文件复制成功后向数据库里插入记录
+                              let insertData = {
+                                  app_id: appId,
+                                  path: item.bundle_id+'/'+fileName,
+                                  prev_id: item.id,
+                                  cur_id: curId,
+                                  isRelative: 1,
+                                  bundle_id: item.bundle_id,
+                              }
+
+                              insertDatas.push(insertData);
+
+                          } else {
+                              return false;
+                          }
+                      }catch(err){
+                          console.log(err);
+                          return false;
+                      };
                   });
+
+                  if (!obj.arrIsEmpty(insertDatas)) {
+                      let patchModel = this.model('patch');
+                      let result = await patchModel.transaction(async () => {
+                          return await patchModel.addManyInfos(insertDatas);
+                      });
+                      if (!result) {
+                          console.log(result);
+                          return false;
+                      } else {
+                          return true;
+                      }
+                  }
               }
           }
       });
-    //   bsdiff.diff();
+
+      return true;
+  }
+
+
+  /**
+   * 格式化文件名字
+   * @method formatPatchName
+   * @param  {[type]}        prevVersion [description]
+   * @param  {[type]}        curVersion  [description]
+   * @return {[type]}                    [description]
+   * @author jimmy
+   */
+  formatPatchName(prevVersion, curVersion){
+      let timestamp = process.hrtime();
+      let name = timestamp+prevVersion.major+'.'+prevVersion.minor+'.'+prevVersion.patch+'-'+curVersion.major+'.'+curVersion.minor+'.'+curVersion.patch;
+      return name;
   }
 }
