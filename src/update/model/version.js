@@ -141,4 +141,32 @@ export default class extends think.model.base {
         }).find();
     }
 
+    /**
+     * 获取版本信息
+     * @method getVersionInfoByVersion
+     * @param  {[type]}                versionInfo [description]
+     * @return {[type]}                            [description]
+     * @author jimmy
+     */
+    async getVersionInfoByVersion(versionInfo){
+        if (versionInfo) {
+            let numStrArr = versionInfo.split('.');
+            if (numStrArr.length == 3) {
+                let major = numStrArr[0];
+                let minor = numStrArr[1];
+                let patch = numStrArr[2];
+
+                return await this.where({
+                    major: major,
+                    minor: minor,
+                    patch: patch,
+                    state: 1,
+                }).find();
+            } else {
+                return false;
+            }
+        }
+
+    }
+
 }

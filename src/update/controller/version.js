@@ -58,18 +58,21 @@ export default class extends Base {
   async selectlatestAction(){
       //获取应用bundleId
       let bundleId = this.get('bundleId');
-      //获取设备版本号
+      //获取设备版本ID
       let prevVersionId = this.get('versionId');
-      //从数据库查询数据
+      //获取设备版本号
+      let prevVersion = this.get('version');
+      //从数据库查询当前最新版本
       let data = await this.model('version').where({
           bundle_id: bundleId,
       }).order({
           id: 'DESC',
       }).select();
 
+      let prevVersionData = await this.model('version').getVersionInfoByVersion(prevVersion);
       let result = null;
 
-      if (data && data.length > 0) {
+      if (data && data.length > 0 && prevVersionData) {
           //获取原生app版本信息
           let containerVersion = await this.model('container_version').getVersionInfoById(data[0].min_container_version_id);
           if (!containerVersion || containerVersion.length <= 0) {
@@ -79,8 +82,8 @@ export default class extends Base {
           }
 
           //如果存在版本号
-          if (prevVersionId) {
-              let patch = await this.model('patch').getPatchInfo(data[0].id, prevVersionId);
+          if (prevVersionData.id) {
+              let patch = await this.model('patch').getPatchInfo(data[0].id, prevVersionData.id);
               if (!obj.objIsEmpty(patch)) {
                   result = this.formatVersion(data[0], containerVersion, patch);
               } else {

@@ -14,9 +14,9 @@ export default class extends Base {
  * @author jimmy
  */
   async indexAction(){
-      let versionId = this.post('versionId'); //获取客户端请求的文件
-      if (!versionId) {
-          versionId = this.get('versionId');
+      let version = this.post('version'); //获取客户端请求的文件
+      if (!version) {
+          version = this.get('version');
       }
 
       let patchId = this.post('patchId');
@@ -28,11 +28,12 @@ export default class extends Base {
           let patchData = await this.model('patch').getPatchbyId(patchId);
           let patchFilePatch = patchPath+patchData.path;
           await this.increasePatchDownloadNum(patchId);
+          await this.increaseDownloadNum(patchData.cur_id);
           this.download(patchFilePatch);//下载文件
       } else {
-          let versionData = await this.model('version').getVersionInfoById(versionId);
+          let versionData = await this.model('version').getVersionInfoByVersion(version);
           let filePath = bundlePath + versionData.url;
-          await this.increaseDownloadNum(versionId);
+          await this.increaseDownloadNum(versionData.id);
           this.download(filePath);//下载文件
       }
 
