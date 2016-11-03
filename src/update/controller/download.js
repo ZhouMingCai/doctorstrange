@@ -1,6 +1,7 @@
 'use strict';
 
 import Base from './base.js';
+import fs from 'fs';
 
 let bundlePath = think.RESOURCE_PATH+'/bundle/';
 let patchPath = think.RESOURCE_PATH+'/patch/';
@@ -27,14 +28,32 @@ export default class extends Base {
       if (patchId) {
           let patchData = await this.model('patch').getPatchbyId(patchId);
           let patchFilePatch = patchPath+patchData.path;
-          await this.increasePatchDownloadNum(patchId);
-          await this.increaseDownloadNum(patchData.cur_id);
-          this.download(patchFilePatch);//下载文件
+          fs.exists(patchFilePatch, async (exists) => {
+              if (!exists) {
+                  this.fail('there is nothing');
+              } else {
+                  await this.increasePatchDownloadNum(patchId);
+                  await this.increaseDownloadNum(patchData.cur_id);
+                  this.download(patchFilePatch);//下载文件
+              }
+          });
+
       } else {
-          let versionData = await this.model('version').getVersionInfoByVersion(version);
-          let filePath = bundlePath + versionData.url;
-          await this.increaseDownloadNum(versionData.id);
-          this.download(filePath);//下载文件
+          if (version) {
+              let versionData = await this.model('version').getVersionInfoByVersion(version);
+              let filePath = bundlePath + versionData.url;
+              fs.exists(filePath, async (exists) => {
+                  if (!exists) {
+                      this.fail('there is nothing');
+                  } else {
+                      await this.increaseDownloadNum(versionData.id);
+                      this.download(filePath);//下载文件
+                  }
+              });
+          } else {
+              this.fail('there is nothing');
+          }
+
       }
 
   }

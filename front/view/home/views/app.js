@@ -28,8 +28,6 @@ module.exports = class App extends Component {
         '热更新',
         '帮助',
         '关于',
-        '热更新',
-        '热更新'
     ]
   }
 

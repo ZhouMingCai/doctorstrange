@@ -14,9 +14,7 @@ const reducer = combineReducers({
   routing: routerReducer
 });
 
-const store = createStore(
-  reducer,
-)
+const store = createStore(reducer);
 
 const history = syncHistoryWithStore(hashHistory, store)
 
@@ -24,7 +22,7 @@ const history = syncHistoryWithStore(hashHistory, store)
 injectTapEventPlugin();
 
 
-render((
+render(
     <Provider store={store}>
         <Router
             history={history}
@@ -32,4 +30,4 @@ render((
         >
         </Router>
     </Provider>
-), document.getElementById('app'))
+, document.getElementById('app'));

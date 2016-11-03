@@ -6,5 +6,5 @@ module.exports = {
     },
     arrIsEmpty: (arr) => {
         return arr == undefined || arr == null || typeof arr.length == undefined || arr.length <= 0;
-    }
+    },
 };

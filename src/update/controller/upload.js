@@ -142,8 +142,11 @@ export default class extends Base {
     let jsMajor = this.get('jsMajor');
     let jsMinor = this.get('jsMinor');
     let jsPatch = this.get('jsPatch');
+    let description = this.get('description');
+
     let miniContainer = this.get('miniContainerId');
     try{
+
         let containerVersionInfo = await this.model('container_version').getVersionInfoById(miniContainer);
         if (containerVersionInfo) {
 
@@ -187,7 +190,8 @@ export default class extends Base {
                                     minor: jsMinor,
                                     patch: jsPatch,
                                     isRelative: 1,
-                                    bundleId: appBundleId
+                                    bundleId: appBundleId,
+                                    description: description
                                 }
                                 let versionModel = this.model('version');
 

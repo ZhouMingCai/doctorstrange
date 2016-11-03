@@ -91,6 +91,7 @@ class AddVersion extends Component {
             modalOpen: false,
             errmsg: '',
             showErrmsg: false,
+            description: '',
         }
 
         this.options = {
@@ -101,6 +102,7 @@ class AddVersion extends Component {
               jsMinor: this.state.jsMinor,
               jsPatch: this.state.jsPatch,
               appId: this.state.appId,
+              description: this.state.description,
               miniContainerId: this.state.selectVersion
           },
           chooseAndUpload: false,
@@ -122,7 +124,6 @@ class AddVersion extends Component {
 
     _uploadError = (err) => {
         if (err.errno != 0) {
-            console.log(err);
             this.setState({
                 errmsg: err.data.errmsg,
                 completed: completed,
@@ -274,6 +275,12 @@ class AddVersion extends Component {
                     jsPatch: res
                 });
                 break;
+            case 'description':
+                this.options.param.description = res;
+                this.setState({
+                    description: res
+                });
+                break;
       }
   }
 
@@ -384,8 +391,18 @@ class AddVersion extends Component {
                        errorText='请输入正确的版本号'
                      />
                 </div>
-                <h5>
-                    上述信息都是必填信息，用于标识当前您要上传的jsbundle版本号
+                <div>
+                    <TextField
+                       floatingLabelText='更新说明'
+                       hintText='请填修更新说明'
+                       multiLine={true}
+                       rows={2}
+                       defaultValue={this.state.description}
+                       onChange={(res)=>this._onTextChange('description', res)}
+                     />
+                </div>
+                <h5 style={s.errmsg}>
+                    上述版本号信息都是必填信息，用于标识当前您要上传的资源版本号
                 </h5>
                 <h4 style={s.errmsg}>{this.state.errmsg}</h4>
                 <div style={{marginTop: 24, marginBottom: 12}}>
@@ -475,7 +492,7 @@ class AddVersion extends Component {
                   min={0}
                   ></LinearProgress>
               <h5>
-                  上传你打好的最新程序包到服务器，我们会将其中的jsbundle提取出来，用于热更新使用！
+                  上传你打好的最新程序包到服务器，我们会将其中的jsbundle以及必要的静态文件提取出来，用于热更新使用！
               </h5>
               <h4 style={s.errmsg}>{this.state.errmsg}</h4>
               <div style={{marginTop: 24, marginBottom: 12}}>
