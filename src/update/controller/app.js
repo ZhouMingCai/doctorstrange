@@ -32,7 +32,7 @@ export default class extends Base {
      * @return {[type]}       [description]
      * @author jimmy
      */
-    async getappinfobyid(){
+    async getappinfobyidAction(){
         let isLogin = await this.isLogin();
         if (isLogin) {
             let appId = this.post('appId');

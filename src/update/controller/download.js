@@ -59,6 +59,28 @@ export default class extends Base {
   }
 
   /**
+   * 通过文件路径下载bundle
+   * @method downloadBundleByPath
+   * @return {[type]}             [description]
+   * @author jimmy
+   */
+  async downloadbundlebypathAction(){
+      let path = this.get('path');
+      let filePath = bundlePath + path;
+      if (path) {
+          fs.exists(filePath, async (exists) => {
+              if (!exists) {
+                  this.fail('there is nothing');
+              } else {
+                  this.download(filePath);//下载文件
+              }
+          });
+      } else {
+          this.fail('there is nothing');
+      }
+  }
+
+  /**
    * 更新下载数据
    * @method increaseDownloadNum
    * @param  {[type]}            versionId [description]

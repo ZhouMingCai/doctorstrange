@@ -56,7 +56,6 @@ export default class extends think.model.base {
       email: usertext,
       phone: usertext,
       _logic: 'OR',
-
     }).find();
 
     if (think.isEmpty(user)) {
@@ -133,12 +132,13 @@ export default class extends think.model.base {
     //如果有修改密码
     let password = data.password;
     if (password) {
-      password = this.getEncryptPassword(password)
+      password = this.getEncryptPassword(password);
+      data[password] = password;
     }
 
     let updateData = {};
     //更新相应的内容
-    ['email', 'phone', 'ip', 'password', 'last_login_ip', 'last_login_time'].forEach((val, name) => {
+    ['email', 'phone', 'update_ip', 'password', 'last_login_ip', 'last_login_time'].forEach((val, name) => {
       if (data[val]) {
         updateData[val] = data[val];
       }

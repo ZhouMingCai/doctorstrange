@@ -36,7 +36,7 @@ export default class extends think.model.base {
             });
 
             let ids = [];
-            for (var variable in containerMap) {
+            for (let variable in containerMap) {
                 if (containerMap.hasOwnProperty(variable)) {
                     ids.push(variable);
                 }
@@ -96,7 +96,8 @@ export default class extends think.model.base {
           bundle_id: data.bundleId,
           is_relative: data.isRelative,
           url: data.url,
-          state: 1
+          state: 1,
+          description: data.description,
         });
     }
 

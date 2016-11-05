@@ -85,7 +85,7 @@ class AppList extends Component {
                         subtitle={<span>app bundle ID : <b>{item.bundle_id}</b></span>}
                         actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
                     >
-                        <Link to={'versionlist/'+item.id}  ><img src="http://www.material-ui.com/images/grid-list/00-52-29-429_640.jpg" onClick={() => this._onAppPress(item)}/></Link>
+                        <Link to={'operationpage/'+item.id}  ><img src="http://www.material-ui.com/images/grid-list/00-52-29-429_640.jpg" onClick={() => this._onAppPress(item)}/></Link>
                     </GridTile>
                 )
             });

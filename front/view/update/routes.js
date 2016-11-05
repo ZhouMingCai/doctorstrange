@@ -10,7 +10,6 @@ module.exports = {
     childRoutes: [
         require('./routes/add_app'),
         require('./routes/app_list'),
-        require('./routes/version_list'),
-        require('./routes/add_version'),
+        require('./routes/operation_page'),
     ]
 }

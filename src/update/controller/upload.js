@@ -193,14 +193,18 @@ export default class extends Base {
                                     bundleId: appBundleId,
                                     description: description
                                 }
+                                console.log(insertData);
                                 let versionModel = this.model('version');
 
                                 let result = await versionModel.transaction(async () => {
                                     return await versionModel.addVersion(insertData);
                                 });
 
+                                console.log('fuck', result);
                                 if (result) {
                                     let ret1 = await this.diffPatch(result, appId);
+                                    console.log('fuck1');
+
                                     if (ret1) {
                                         this.success({
                                             errmsg: '添加成功！'
@@ -211,6 +215,7 @@ export default class extends Base {
                                         });
                                     }
                                 } else {
+                                    console.log('fail');
                                     this.fail({
                                         errmsg: '上传失败!'
                                     });

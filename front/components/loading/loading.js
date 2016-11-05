@@ -14,6 +14,7 @@ const muiTheme = getMuiTheme({
 });
 let s = {
     container: {
+        flex : 1,
         position: 'fixed',
         height: '100%',
         width: '100%',

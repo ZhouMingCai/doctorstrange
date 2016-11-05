@@ -28,11 +28,36 @@ export default class extends think.model.base {
      * @return {[type]}                    [description]
      * @author jimmy
      */
-    async getVersionListByAppId(appId){
-        return await this.where({
+    async getVersionListByAppId(appId, limit){
+        if (limit) {
+            return await this.limit(limit).where({
+                app_id: appId,
+                state: 1
+            }).select();
+        } else {
+            return await this.where({
+                app_id: appId,
+                state: 1
+            }).select();
+        }
+
+    }
+
+    /**
+     * [getVersionListPageByAppId description]
+     * @method getVersionListPageByAppId
+     * @param  {[type]}                  appId      [description]
+     * @param  {Number}                  [page=0]   [description]
+     * @param  {Number}                  [limit=10] [description]
+     * @return {[type]}                             [description]
+     * @author jimmy
+     */
+    async getVersionListPageByAppId(appId,  page = 0, limit = 10 ){
+        let result = await this.page(page, limit).where({
             app_id: appId,
             state: 1
-        }).select();
+        }).order('id DESC').countSelect();
+        return result;
     }
 
     /**

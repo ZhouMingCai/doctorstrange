@@ -33,18 +33,39 @@ export default class extends Base {
    */
   async getversionlistbyappidAction(){
       let appId = this.post('appId');
-
-      let result = await this.model('container_version').getVersionListByAppId(appId);
+      let limit = 10;
+      let result = await this.model('container_version').getVersionListByAppId(appId, limit);
       if (result && typeof result.length != undefined) {
           result.map((item) => {
               item['version_str']=item.major + '.' + item.minor + '.' + item.patch;
           });
-
           this.success(result);
       } else {
-          this.fail(result);
+          this.fail({
+              errmsg: '查询出错'
+          });
       }
 
+  }
+
+  /**
+   * 获取原生版本列表
+   * @method getversionlistpageAction
+   * @return {[type]}                 [description]
+   * @author jimmy
+   */
+  async getversionlistpageAction(){
+      let isLogin = await this.isLogin();
+      if (isLogin) {
+          let appId = this.post('appId');
+          let pageNum = this.post('pageNum');
+          let limit = this.post('limit');
+
+          let result = await this.model('container_version').getVersionListPageByAppId(appId, pageNum, limit);
+          this.success(result);
+      } else {
+          return this.redirect('/');
+      }
   }
 
   /**

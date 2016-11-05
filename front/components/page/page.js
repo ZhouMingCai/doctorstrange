@@ -5,6 +5,8 @@ import {deepOrange500, green700, blue50} from 'material-ui/styles/colors';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Loading from '../loading/loading';
+import Snackbar from 'material-ui/Snackbar';
+
 
 const muiTheme = getMuiTheme({
     palette: {
@@ -20,12 +22,15 @@ module.exports = class Page extends Component {
     }
     constructor(props){
         super(props);
+        this.state = {
+            msgOpen: false
+        }
     }
 
     render(){
         return (
-            <MuiThemeProvider muiTheme={muiTheme}>
-                <div style={{textAlign: 'center'}}>
+            <MuiThemeProvider muiTheme={this.props.muiTheme? this.props.muiTheme : muiTheme}>
+                <div style={{textAlign: 'center',}}>
                     {
                         this.props.loading?
                         <Loading></Loading>
