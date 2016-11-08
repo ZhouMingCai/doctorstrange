@@ -11,7 +11,7 @@ import {
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import ExpandTransition from 'material-ui/internal/ExpandTransition';
-import {TextField} from 'components';
+import {TextField, Snackbar} from 'components';
 import {deepOrange500, green700, blue500, orange500} from 'material-ui/styles/colors';
 import Paper from 'material-ui/Paper';
 import FileUpload from 'react-fileupload';
@@ -599,6 +599,7 @@ module.exports = class AddVersion extends Component {
                 >
                   操作成功！
                </Dialog>
+               <Snackbar></Snackbar>
                </div>
             </Page>
         )

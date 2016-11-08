@@ -29,6 +29,7 @@ module.exports = class App extends Component {
         '帮助',
         '关于',
     ]
+
   }
 
   handleRequestClose() {
