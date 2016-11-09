@@ -137,7 +137,6 @@ module.exports = class AddVersion extends Component {
             this.setState({
                 errmsg: res.data.errmsg,
                 modalOpen: true,
-                pageLoading: true,
             });
         }
     }
@@ -154,14 +153,12 @@ module.exports = class AddVersion extends Component {
      * @author jimmy
      */
     _showProgress = (progress) => {
-        console.log(progress);
         let completed = (progress.loaded/progress.total) * 100;
-        console.log(completed);
 
         if (completed >= 100) {
             this.setState({
                 completed: 100,
-                pageLoading: true,
+                modalOpen: true
             })
         } else {
             this.setState({
@@ -595,9 +592,6 @@ module.exports = class AddVersion extends Component {
                   actions={actions}
                   modal={false}
                   open={this.state.modalOpen}
-                  onRequestClose={() => this.setState({
-                      modalOpen: false
-                  })}
                 >
                   操作成功！
                </Dialog>
