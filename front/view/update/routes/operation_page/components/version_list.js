@@ -29,7 +29,12 @@ const s = {
     },
     listItemStyle: {
         backgroundColor: '#e5e5e5',
-        marginBottom: '2px'
+        marginBottom: '2px',
+        textAlign: 'left',
+    },
+    listOutItemStyle:{
+        marginBottom: '2px',
+        textAlign: 'left',
     },
     pageBottom: {
         textAlign: 'center',
@@ -37,6 +42,14 @@ const s = {
     },
     pageNumBtn: {
         width: 10,
+    },
+    list: {
+        width: '60%',
+        margin:'0 auto'
+    },
+    listContainer: {
+        textAlign: 'center',
+        alignItems: 'center',
     }
 }
 
@@ -89,6 +102,9 @@ module.exports = class VersionList extends Component{
             },
             (err) => {
                 console.log(err);
+                this.setState({
+                    loading: false
+                });
             }
         )
     }
@@ -97,18 +113,13 @@ module.exports = class VersionList extends Component{
             <Page
                 loading={this.state.loading}
             >
-                <div style={{textAlign: 'left'}}>
-                    <List>
+                <div style={s.listContainer}>
+                    <List
+                        style={s.list}
+                    >
                         {this._renderItems()}
                     </List>
                     {this._renderPageNavigator()}
-                    <div style={s.addBtnPosition} alt='发布新版本' onClick={() => {
-                            this.props.onTabsChange? this.props.onTabsChange(1) : null;
-                        }}>
-                        <FloatingActionButton secondary={true} >
-                          <ContentAdd />
-                        </FloatingActionButton>
-                    </div>
                 </div>
             </Page>
         )
@@ -184,6 +195,7 @@ module.exports = class VersionList extends Component{
                      initiallyOpen={false}
                      primaryTogglesNestedList={true}
                      key={item.id}
+                     style={s.listOutItemStyle}
                      nestedItems={[
                              item.description?
                              <ListItem

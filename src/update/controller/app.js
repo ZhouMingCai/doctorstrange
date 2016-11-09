@@ -14,14 +14,10 @@ export default class extends Base {
       let user = await this.getUser();
       let id = user.id;
       let result = await this.model('home/user').selectUserById(id);
-      console.log('ssss',result);
-      console.log('ssss',id);
       if (result == 'USER_NOT_EXIST') {
           this.fail(result);
       } else {
-          console.log(id);
           let dataList = await this.model('app').getAppListByUserId(id);
-          console.log(dataList);
           this.success(dataList);
       }
     }
@@ -36,7 +32,7 @@ export default class extends Base {
         let isLogin = await this.isLogin();
         if (isLogin) {
             let appId = this.post('appId');
-            let result = this.model('app').getAppInfoById(appId);
+            let result = await this.model('app').getAppInfoById(appId);
             if (result) {
                 this.success(result);
             } else {

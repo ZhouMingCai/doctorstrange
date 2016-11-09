@@ -57,6 +57,12 @@ export default class extends think.model.base {
             app_id: appId,
             state: 1
         }).order('id DESC').countSelect();
+        if (result && typeof result.data.length !== undefined && result.data.length > 0) {
+            result.data.map((item) => {
+                item['version_str'] = item.major+'.'+item.minor+'.'+item.patch;
+            });
+        }
+
         return result;
     }
 

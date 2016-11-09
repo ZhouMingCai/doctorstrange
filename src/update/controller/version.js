@@ -63,14 +63,6 @@ export default class extends Base {
       //获取设备版本号
       let prevVersion = this.get('version');
       //从数据库查询当前最新版本
-      //
-      //1.5.6版本后热更新增加了增量更新等大改动，为了避免客户端出错，在此对该版本进行特殊处理，待稳定后将此代码删除
-
-      if (prevVersion === '1.5.6' || !prevVersion) {
-          this.fail({
-              errorMessage: '无该记录',
-          });
-      }
 
 
       //will desprate

@@ -200,10 +200,10 @@ export default class extends Base {
                                     return await versionModel.addVersion(insertData);
                                 });
 
-                                console.log('fuck', result);
+                                await this.increaseContainerUpdateNum(miniContainer);
+
                                 if (result) {
                                     let ret1 = await this.diffPatch(result, appId);
-                                    console.log('fuck1');
 
                                     if (ret1) {
                                         this.success({
@@ -215,7 +215,6 @@ export default class extends Base {
                                         });
                                     }
                                 } else {
-                                    console.log('fail');
                                     this.fail({
                                         errmsg: '上传失败!'
                                     });
@@ -353,5 +352,16 @@ export default class extends Base {
       let timestamp = process.hrtime();
       let name = timestamp+prevVersion.major+'.'+prevVersion.minor+'.'+prevVersion.patch+'-'+curVersion.major+'.'+curVersion.minor+'.'+curVersion.patch;
       return name;
+  }
+
+  /**
+   * 更新原生更新版本数
+   * @method increasePatchDownloadNum
+   * @param  {[type]}                 patchId [description]
+   * @return {[type]}                         [description]
+   * @author jimmy
+   */
+  async increaseContainerUpdateNum(containerId){
+      return await this.model('container_version').where({id: containerId}).increment('update_num', 1);
   }
 }

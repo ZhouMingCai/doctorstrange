@@ -15,6 +15,15 @@ const muiTheme = getMuiTheme({
     },
 });
 
+let s = {
+    container: {
+        flex : 1,
+        height: '100%',
+        width: '100%',
+        textAlign: 'center'
+    }
+}
+
 
 module.exports = class Page extends Component {
     static propsTypes = {
@@ -30,13 +39,12 @@ module.exports = class Page extends Component {
     render(){
         return (
             <MuiThemeProvider muiTheme={this.props.muiTheme? this.props.muiTheme : muiTheme}>
-                <div style={{textAlign: 'center',}}>
+                <div style={s.container}>
                     {
                         this.props.loading?
                         <Loading></Loading>
-                        :null
+                        :this.props.children
                     }
-                    {this.props.children}
                 </div>
             </MuiThemeProvider>
         )

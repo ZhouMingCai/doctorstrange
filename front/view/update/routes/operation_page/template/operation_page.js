@@ -11,6 +11,7 @@ import {titleAction} from 'actions';
 import { connect } from 'react-redux';
 import AddVersion from '../components/add_version';
 import VersionList from '../components/version_list';
+import ContainerVersionList from '../components/container_version_list';
 import Book from 'material-ui/svg-icons/action/book';
 import AddCircle from 'material-ui/svg-icons/content/add-circle';
 import AddBox from 'material-ui/svg-icons/content/add-box';
@@ -18,6 +19,7 @@ import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'mat
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import SwipeableViews from 'react-swipeable-views';
 import BookBorder from 'material-ui/svg-icons/action/bookmark-border';
+import RaisedButton from 'material-ui/RaisedButton';
 
 const muiTheme = getMuiTheme({
     palette: {
@@ -49,6 +51,11 @@ class OperationPage extends Component {
         this.props.setTitle('版本操作');
         this._getData();
     }
+
+    // componentWillMount() {
+    //     this.props.setTitle('版本操作');
+    //     this._getData();
+    // }
 
 
     _getData = () => {
@@ -84,13 +91,17 @@ class OperationPage extends Component {
                 loading={this.state.loading}
                 muiTheme={muiTheme}
             >
-                <Card>
-                <CardHeader
-                  title="URL Avatar"
-                  subtitle="Subtitle"
-                  actAsExpander={true}
-                  showExpandableButton={true}
-                />
+                <Card style={{textAlign: 'center'}}>
+                <CardText color={green700} style={{fontSize: 36}}>{this.state.data? this.state.data.app_name : ''}</CardText>
+                <CardText >{this.state.data? this.state.data.description : ''}</CardText>
+                <CardActions>
+                  <RaisedButton label='发布新版本' primary={true} onTouchTap={() => {
+                          this.setState({
+                              slideIndex: 1
+                          })
+                      }} />
+                  <RaisedButton label='添加原生版本' backgroundColor={green700} onTouchTap={this.handleReduce} />
+                </CardActions>
                 </Card>
                 <Tabs
                     style={s.tabs}
@@ -130,7 +141,11 @@ class OperationPage extends Component {
                         onTabsChange={this._handleChange}
                         index={this.state.slideIndex}
                     ></AddVersion>
-                    <div>Addddd</div>
+                    <ContainerVersionList
+                        appId={this.state.appId}
+                        onTabsChange={this._handleChange}
+                        index={this.state.slideIndex}
+                    ></ContainerVersionList>
                 </SwipeableViews>
             </Page>
 

@@ -83,7 +83,7 @@ class AppList extends Component {
                         style={s.gridTitle}
                         titlePosition='top'
                         subtitle={<span>app bundle ID : <b>{item.bundle_id}</b></span>}
-                        actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
+                        onClick={() => this._onAppPress(item)}
                     >
                         <Link to={'operationpage/'+item.id}  ><img src="http://www.material-ui.com/images/grid-list/00-52-29-429_640.jpg" onClick={() => this._onAppPress(item)}/></Link>
                     </GridTile>
@@ -95,7 +95,7 @@ class AppList extends Component {
     }
 
     _onAppPress(item){
-        console.log(item);
+        this.props.history.push('operationpage/'+item.id)
     }
 }
 

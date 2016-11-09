@@ -11,7 +11,7 @@ import {
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import ExpandTransition from 'material-ui/internal/ExpandTransition';
-import {TextField, Snackbar} from 'components';
+import {TextField} from 'components';
 import {deepOrange500, green700, blue500, orange500} from 'material-ui/styles/colors';
 import Paper from 'material-ui/Paper';
 import FileUpload from 'react-fileupload';
@@ -123,7 +123,6 @@ module.exports = class AddVersion extends Component {
     }
 
     _uploadError = (err) => {
-        console.log(err, 'ffff');
         if (err.errno != 0) {
             this.setState({
                 errmsg: err.data.errmsg,
@@ -155,7 +154,10 @@ module.exports = class AddVersion extends Component {
      * @author jimmy
      */
     _showProgress = (progress) => {
+        console.log(progress);
         let completed = (progress.loaded/progress.total) * 100;
+        console.log(completed);
+
         if (completed >= 100) {
             this.setState({
                 completed: 100,
@@ -599,7 +601,6 @@ module.exports = class AddVersion extends Component {
                 >
                   操作成功！
                </Dialog>
-               <Snackbar></Snackbar>
                </div>
             </Page>
         )
