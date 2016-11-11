@@ -2,5 +2,5 @@
 module.exports = {
     request: require('./request'),
     str: require('./string'),
-    // zip: require('./zip'),
+    zip: require('./zip'),
 };

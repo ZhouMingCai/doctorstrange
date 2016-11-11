@@ -1,11 +1,11 @@
 import React from 'react'
 import {userAction, titleAction} from 'actions';
 import { connect } from 'react-redux';
-import FileUpload from 'react-fileupload';
 import RaisedButton from 'material-ui/RaisedButton';
 import LinearProgress from 'material-ui/LinearProgress';
-import {Zip} from 'tools';
+import {zip} from 'tools';
 // import {AppBundleInfo} from '../../../../../tools';
+import DropZone from 'react-dropzone';
 
 const infoPlistRegex = new RegExp('Info.plist');
 
@@ -15,22 +15,36 @@ class AddApp extends React.Component {
         super(props);
         this.state = {
             completed: 0,//
-            max: 100
+            max: 100,
         }
-        let file = {}
-        let zip = new  Zip(file);
-        console.log(zip);
     }
 
     componentDidMount() {
         this.props.setTitle('添加应用');
     }
 
+    _onDrop = (files) =>{
+        console.log(files);
+        let file = files[0];
+        let reader = new FileReader();
+        reader.readAsArrayBuffer(file);
+        console.log(reader);
+        reader.onload = (f) => {
+            console.log(f);
+        };
+
+    }
+
     render() {
         return (
           <div>
             <h2>AddApp</h2>
-
+            <DropZone
+                ref='dropzone'
+                onDrop={this._onDrop}
+            >
+                <div>drop app here</div>
+            </DropZone>
           </div>
         )
     }
