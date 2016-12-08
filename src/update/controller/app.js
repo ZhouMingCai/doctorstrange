@@ -1,6 +1,8 @@
 'use strict';
 
 import Base from './base.js';
+import plist from 'plist';
+import pngdefry from 'pngdefry';
 
 export default class extends Base {
 
@@ -60,5 +62,18 @@ export default class extends Base {
               isRelative: version.is_relative == 1,
           }
       }
+    }
+
+
+    async transformpngandplistAction(){
+        let appIcon = this.file('appIcon');
+        let infoPlist = this.post('plist');
+
+        console.log(appIcon);
+        console.log(infoPlist);
+
+        this.success({
+            msg: 'success'
+        });
     }
 }

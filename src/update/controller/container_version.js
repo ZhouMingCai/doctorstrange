@@ -1,6 +1,7 @@
 'use strict';
 
 import Base from './base.js';
+import {obj} from '../../tools';
 
 
 export default class extends Base {
@@ -16,13 +17,34 @@ export default class extends Base {
   }
 
   async addAction(){
+      let appId = this.post('appId');
+      let major = this.post('major');
+      let minor = this.post('minor');
+      let patch = this.post('patch');
+      let bundleId = this.post('bundleId');
+
       let data = {
-          major: '1',
-          minor: '0',
-          patch: '0',
-      };
-      let result = await this.model('container_version').add(data);
-      this.success(result);
+        appId: appId,
+        major: major,
+        minor: minor,
+        patch: patch,
+        bundleId: bundleId,
+      }
+
+      let versionModel = this.model('container_version');
+      let result = await versionModel.transaction(async () => {
+          return await versionModel.addContainerVersion(data);
+      });
+
+      if (result) {
+          this.success({
+              errmsg: '添加成功！'
+          });
+      } else {
+          this.fail({
+              errmsg: '添加失败！'
+          });
+      }
   }
 
   /**
@@ -33,8 +55,7 @@ export default class extends Base {
    */
   async getversionlistbyappidAction(){
       let appId = this.post('appId');
-      let limit = 10;
-      let result = await this.model('container_version').getVersionListByAppId(appId, limit);
+      let result = await this.model('container_version').getVersionListByAppId(appId);
       if (result && typeof result.length != undefined) {
           result.map((item) => {
               item['version_str']=item.major + '.' + item.minor + '.' + item.patch;
@@ -97,5 +118,26 @@ export default class extends Base {
       }
 
       this.success(result);
+  }
+
+  /**
+   * 判断原生版本是否存在
+   * @method containerversionexistAction
+   * @return {[type]}                    [description]
+   * @author jimmy
+   */
+  async containerversionexistAction(){
+      let appId = this.post('appId');
+      let major = this.post('major');
+      let minor = this.post('minor');
+      let patch = this.post('patch');
+
+      let result = await this.model('container_version').getVersionInfoByVersionInfo(appId, major, minor, patch);
+
+      if (obj.objIsEmpty(result)) {
+          this.success(false);
+      } else {
+          this.success(true);
+      }
   }
 }

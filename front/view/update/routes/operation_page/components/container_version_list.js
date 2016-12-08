@@ -52,7 +52,7 @@ module.exports = class ContainerVersionList extends Component {
         super(props);
         this.state = {
             pageNum: 1,
-            limit: 10,
+            limit: 5,
             appId: this.props.appId,
             dataList: [],
             totalPage: 0,
@@ -94,11 +94,10 @@ module.exports = class ContainerVersionList extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.index !== nextProps.index && nextProps.index === 0) {
+        if (this.props.index !== nextProps.index && (nextProps.index === 2 || this.props.index == 2)) {
             this._getData();
         }
     }
-
 
     render(){
         return (

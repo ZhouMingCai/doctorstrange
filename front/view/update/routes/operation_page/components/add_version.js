@@ -158,7 +158,6 @@ module.exports = class AddVersion extends Component {
         if (completed >= 100) {
             this.setState({
                 completed: 100,
-                modalOpen: true
             })
         } else {
             this.setState({
@@ -171,6 +170,13 @@ module.exports = class AddVersion extends Component {
     componentDidMount() {
         this._getData();
     }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.index !== nextProps.index && (nextProps.index === 2 || this.props.index == 2)) {
+            this._getData();
+        }
+    }
+
 
     _getData(){
         request(
@@ -537,6 +543,28 @@ module.exports = class AddVersion extends Component {
     );
   }
 
+    _jumpToList = () => {
+        this.setState({
+            loading: false,
+            finished: false,
+            stepIndex: 0,
+            selectVersion: '',
+            pageLoading: false,
+            jsMajor: '',
+            jsMinor: '',
+            jsPatch: '',
+            miniContainerId: '',
+            fileName: '',
+            modalOpen: false,
+            errmsg: '',
+            showErrmsg: false,
+            description: '',
+        });
+
+        setTimeout( () => {
+            this.props.onTabsChange? this.props.onTabsChange(0) : null;
+        }, 1000);
+    }
 
     render() {
         let actions = [
@@ -544,27 +572,7 @@ module.exports = class AddVersion extends Component {
            label='确定'
            primary={true}
            keyboardFocused={true}
-           onTouchTap={() => {
-               this.setState({
-                   loading: false,
-                   finished: false,
-                   stepIndex: 0,
-                   selectVersion: '',
-                   pageLoading: false,
-                   jsMajor: '',
-                   jsMinor: '',
-                   jsPatch: '',
-                   miniContainerId: '',
-                   fileName: '',
-                   modalOpen: false,
-                   errmsg: '',
-                   showErrmsg: false,
-                   description: '',
-               });
-
-               this.props.onTabsChange? this.props.onTabsChange(0) : null;
-
-           }}
+           onTouchTap={this._jumpToList}
          > </FlatButton>
         ,
         ];
@@ -600,7 +608,4 @@ module.exports = class AddVersion extends Component {
         )
     }
 
-    _goList(){
-
-    }
 }

@@ -53,6 +53,10 @@ module.exports = [{
         }
     ]
   },
+  externals: {
+      'zip': 'window.zip',
+      'plist': 'window.plist',
+  },
   plugins: [
     // new webpack.optimize.UglifyJsPlugin(),
     new BrowserSyncPlugin({

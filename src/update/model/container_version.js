@@ -96,4 +96,24 @@ export default class extends think.model.base {
           state: 1
         });
     }
+
+    /**
+     * 根据条件查询原生版本是否存在
+     * @method getVersionInfoByVersionInfo
+     * @param  {[type]}                    appId [description]
+     * @param  {[type]}                    major [description]
+     * @param  {[type]}                    minor [description]
+     * @param  {[type]}                    patch [description]
+     * @return {[type]}                          [description]
+     * @author jimmy
+     */
+    async getVersionInfoByVersionInfo(appId, major, minor, patch){
+        return await this.where({
+            app_id: appId,
+            major: major,
+            minor: minor,
+            patch: patch,
+            state: 1
+        }).find();
+    }
 }

@@ -193,7 +193,7 @@ export default class extends Base {
                                     bundleId: appBundleId,
                                     description: description
                                 }
-                                console.log(insertData);
+
                                 let versionModel = this.model('version');
 
                                 let result = await versionModel.transaction(async () => {

@@ -3,10 +3,10 @@
 import React, {Component} from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import {str, request} from 'tools';
-import {deepOrange500, green700, lime500, green300, teal800} from 'material-ui/styles/colors';
+import {deepOrange500, green700, lime500, green300, teal800, orange500, blue500} from 'material-ui/styles/colors';
 import {Router, Route, Link, IndexLink} from 'react-router'
 import FlatButton from 'material-ui/FlatButton';
-import {Page} from 'components';
+import {Page, SSnackbar, TextField} from 'components';
 import {titleAction} from 'actions';
 import { connect } from 'react-redux';
 import AddVersion from '../components/add_version';
@@ -20,6 +20,8 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import SwipeableViews from 'react-swipeable-views';
 import BookBorder from 'material-ui/svg-icons/action/bookmark-border';
 import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
+import Snackbar from 'material-ui/Snackbar';
 
 const muiTheme = getMuiTheme({
     palette: {
@@ -32,6 +34,24 @@ let s = {
     tabs: {
         padding: 10,
         backgroudColor: '#f0f0f0'
+    },
+    errorStyle: {
+        color: orange500,
+    },
+    underlineStyle: {
+        borderColor: orange500,
+    },
+    floatingLabelStyle: {
+        color: orange500,
+    },
+    floatingLabelFocusStyle: {
+        color: blue500,
+    },
+    step: {
+        flex: 1
+    },
+    errmsg: {
+        color: 'red'
     }
 }
 
@@ -44,6 +64,13 @@ class OperationPage extends Component {
             appId: this.props.params.appId,
             loading: true,
             slideIndex: 0,
+            showDialog: false,
+            errmsg: '',
+            jsMajor: '',
+            jsMinor: '',
+            jsPatch: '',
+            description: '',
+            snackOpen: false
         }
     }
 
@@ -57,6 +84,17 @@ class OperationPage extends Component {
     //     this._getData();
     // }
 
+    _addNewContainerVersion = () => {
+        console.log('ssss');
+        this.setState({
+            showDialog: true,
+            errmsg: '',
+            jsMajor: '',
+            jsMinor: '',
+            jsPatch: '',
+            description: '',
+        })
+    }
 
     _getData = () => {
         request(
@@ -82,10 +120,31 @@ class OperationPage extends Component {
     _handleChange = (value, refresh) => {
         this.setState({
           slideIndex: value,
+          snackOpen: false,
+          showDialog: false
         });
      };
 
     render(){
+
+        let actions = [
+            <FlatButton
+                label='取消'
+                secondary={true}
+                keyboardFocused={false}
+                onTouchTap={() => {
+                    this.setState({
+                        showDialog: false
+                    });
+                }}
+            ></FlatButton>,
+            <RaisedButton
+                label='确定'
+                primary={true}
+                keyboardFocused={false}
+                onTouchTap={this._checkAndAddVersion}
+            ></RaisedButton>
+        ];
         return (
             <Page
                 loading={this.state.loading}
@@ -100,7 +159,7 @@ class OperationPage extends Component {
                               slideIndex: 1
                           })
                       }} />
-                  <RaisedButton label='添加原生版本' backgroundColor={green700} onTouchTap={this.handleReduce} />
+                  <RaisedButton label='添加原生版本' backgroundColor={green700} onTouchTap={this._addNewContainerVersion} />
                 </CardActions>
                 </Card>
                 <Tabs
@@ -147,12 +206,212 @@ class OperationPage extends Component {
                         index={this.state.slideIndex}
                     ></ContainerVersionList>
                 </SwipeableViews>
+
+                <Dialog
+                    title='添加原生版本号'
+                    actions={actions}
+                    modal={false}
+                    open={this.state.showDialog}
+                    onRequestClose={this.handleClose}
+                >
+                    {this._renderAddContent()}
+                </Dialog>
             </Page>
 
         )
     }
 
 
+    /**
+     * 检查版本号是否合法，并提交添加
+     * @method
+     * @return {[type]} [description]
+     * @author jimmy
+     */
+    _checkAndAddVersion = () => {
+        if (str.isEmpty(this.state.jsMajor) || str.isEmpty(this.state.jsMinor)|| str.isEmpty(this.state.jsPatch)) {
+            this.setState({
+                errmsg: '请填写完整版本信息'
+            });
+            return;
+        } else {
+            this.setState({
+                pageLoading: true,
+            });
+            request(
+                '/update/container_version/containerversionexist',
+                {
+                    appId: this.state.appId,
+                    major: this.state.jsMajor,
+                    minor: this.state.jsMinor,
+                    patch: this.state.jsPatch
+                },
+                (res) => {
+                    if (res) {
+                        this.setState({
+                            errmsg: '该版本已存在！请填写另外一个版本号',
+                            pageLoading: false,
+                        });
+                    } else {
+                        request(
+                            '/update/container_version/add',
+                            {
+                                appId: this.state.appId,
+                                bundleId: this.state.data.bundle_id,
+                                major: this.state.jsMajor,
+                                minor: this.state.jsMinor,
+                                patch: this.state.jsPatch
+                            },
+                            (res) => {
+                                this.setState({
+                                    errmsg: '添加原生版本成功',
+                                    pageLoading: false,
+                                    snackOpen: true,
+                                    showDialog: false
+                                });
+                                setTimeout(() => {
+                                    this._handleChange(2, true)
+                                }, 1000);
+
+                            },
+                            (err) => {
+                                this.setState({
+                                    pageLoading: false,
+                                    errmsg: err.errorMsg? err.errorMsg : '访问出错了，请重试！',
+                                });
+                            }
+                        );
+                    }
+                },
+                (err) => {
+                    this.setState({
+                        pageLoading: false,
+                        errmsg: err.errorMsg? err.errorMsg : '访问出错了，请重试！',
+                    });
+                }
+            );
+        }
+    }
+    /**
+     * 渲染添加原生版本的弹窗内容
+     * @method
+     * @return {[type]} [description]
+     * @author jimmy
+     */
+    _renderAddContent = () => {
+        return (
+            <div style={s.step}>
+                <div>
+                    <TextField
+                       floatingLabelText='主版本号'
+                       hintText='请填写主版本号'
+                       floatingLabelStyle={s.floatingLabelStyle}
+                       floatingLabelFocusStyle={s.floatingLabelFocusStyle}
+                       errorStyle={s.errorStyle}
+                       type='number'
+                       defaultValue={this.state.jsMajor}
+                       onChange={(res)=>this._onTextChange('jsMajor', res)}
+                       regexp='^[0-9]'
+                       errorText='请输入正确的版本号'
+                     />
+                </div>
+                <div>
+                    <TextField
+                       floatingLabelText='子版本号'
+                       hintText='请填写子版本号'
+                       floatingLabelStyle={s.floatingLabelStyle}
+                       floatingLabelFocusStyle={s.floatingLabelFocusStyle}
+                       errorStyle={s.errorStyle}
+                       type='number'
+                       defaultValue={this.state.jsMinor}
+                       onChange={(res)=>this._onTextChange('jsMinor', res)}
+                       regexp='^[0-9]'
+                       errorText='请输入正确的版本号'
+                     />
+                </div>
+                <div>
+                    <TextField
+                       floatingLabelText='修正版本号'
+                       hintText='请填修正版本号'
+                       floatingLabelStyle={s.floatingLabelStyle}
+                       floatingLabelFocusStyle={s.floatingLabelFocusStyle}
+                       errorStyle={s.errorStyle}
+                       type='number'
+                       defaultValue={this.state.jsPatch}
+                       onChange={(res)=>this._onTextChange('jsPatch', res)}
+                       regexp='^[0-9]'
+                       errorText='请输入正确的版本号'
+                     />
+                </div>
+                <div>
+                    <TextField
+                       floatingLabelText='更新说明'
+                       hintText='请填修更新说明'
+                       multiLine={true}
+                       rows={2}
+                       defaultValue={this.state.description}
+                       onChange={(res)=>this._onTextChange('description', res)}
+                     />
+                </div>
+                <h5 style={s.errmsg}>
+                    上述版本号信息都是必填信息
+                </h5>
+                <h4 style={s.errmsg}>{this.state.errmsg}</h4>
+                <Snackbar
+                    open={this.state.snackOpen}
+                    message={this.state.errmsg}
+                    autoHideDuration={1000}
+                    onRequestClose={this._handleRequestClose}
+                ></Snackbar>
+           </div>
+        )
+    }
+
+
+    /**
+     * 关闭吐司
+     * @method
+     * @return {[type]} [description]
+     * @author jimmy
+     */
+    _handleRequestClose = () => {
+        this.setState({
+            snackOpen: false,
+        });
+    }
+
+    /**
+     * 版本号变更
+     * @method _onTextChange
+     * @param  {[type]}      type [description]
+     * @param  {[type]}      res  [description]
+     * @return {[type]}           [description]
+     * @author jimmy
+     */
+    _onTextChange(type, res){
+        switch (type) {
+              case 'jsMajor':
+                  this.setState({
+                      jsMajor: res
+                  });
+                break;
+              case 'jsMinor':
+                  this.setState({
+                      jsMinor: res
+                  });
+                  break;
+              case 'jsPatch':
+                  this.setState({
+                      jsPatch: res
+                  });
+                  break;
+              case 'description':
+                  this.setState({
+                      description: res
+                  });
+                  break;
+        }
+    }
 };
 
 let setState = (state) => {

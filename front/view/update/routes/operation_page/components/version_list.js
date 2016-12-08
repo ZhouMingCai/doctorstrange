@@ -59,7 +59,7 @@ module.exports = class VersionList extends Component{
 
         this.state = {
             pageNum: 1,
-            limit: 10,
+            limit: 5,
             appId: this.props.appId,
             dataList: [],
             totalPage: 0,
@@ -74,7 +74,7 @@ module.exports = class VersionList extends Component{
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.index !== nextProps.index && nextProps.index === 0) {
+        if (this.props.index !== nextProps.index && (nextProps.index === 0 || this.props.index == 0)) {
             this._getData();
         }
     }
