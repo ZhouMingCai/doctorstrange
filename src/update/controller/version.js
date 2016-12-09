@@ -69,6 +69,7 @@ export default class extends Base {
 
       let data = await this.model('version').where({
           bundle_id: bundleId,
+          state: 1
       }).order({
           id: 'DESC',
       }).select();

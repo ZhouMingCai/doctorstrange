@@ -46,7 +46,8 @@ export default class extends think.model.base {
     async getPatchInfo(curId, prevId){
         return await this.where({
             cur_id: curId,
-            prev_id: prevId
+            prev_id: prevId,
+            state: 1
         }).find();
     }
 
