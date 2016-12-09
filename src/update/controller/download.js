@@ -43,6 +43,7 @@ export default class extends Base {
           if (version) {
               console.log('version', version);
               let versionData = await this.model('version').getVersionInfoByVersion(version);
+              console.log('version+ '+version, versionData);
               let filePath = bundlePath + versionData.url;
               fs.exists(filePath, async (exists) => {
                   if (!exists) {
