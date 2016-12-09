@@ -149,8 +149,25 @@ export default class extends think.model.base {
      * @return {[type]}                            [description]
      * @author jimmy
      */
-    async getVersionInfoByVersion(versionInfo){
-        if (versionInfo) {
+    async getVersionInfoByVersion(versionInfo, bundleId){
+        if (versionInfo && bundleId) {
+            let numStrArr = versionInfo.split('.');
+            if (numStrArr.length == 3) {
+                let major = numStrArr[0];
+                let minor = numStrArr[1];
+                let patch = numStrArr[2];
+
+                return await this.where({
+                    major: major,
+                    minor: minor,
+                    patch: patch,
+                    bundle_id: bundleId,
+                    state: 1,
+                }).find();
+            } else {
+                return false;
+            }
+        } else {
             let numStrArr = versionInfo.split('.');
             if (numStrArr.length == 3) {
                 let major = numStrArr[0];

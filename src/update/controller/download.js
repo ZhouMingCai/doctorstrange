@@ -25,6 +25,11 @@ export default class extends Base {
           patchId = this.get('patchId');
       }
 
+      let bundleId = this.post('bundleId');
+      if (!bundleId) {
+          bundleId = this.get('bundleId');
+      }
+
       if (patchId) {
           console.log('patchId', patchId);
           let patchData = await this.model('patch').getPatchbyId(patchId);
@@ -41,9 +46,7 @@ export default class extends Base {
 
       } else {
           if (version) {
-              console.log('version', version);
-              let versionData = await this.model('version').getVersionInfoByVersion(version);
-              console.log('version+ '+version, versionData);
+              let versionData = await this.model('version').getVersionInfoByVersion(version, bundleId);
               let filePath = bundlePath + versionData.url;
               fs.exists(filePath, async (exists) => {
                   if (!exists) {
