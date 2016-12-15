@@ -2,7 +2,7 @@
   "apps": [{
     "name": "hot-update",
     "script": "www/production.js",
-    "cwd": "/home/hot-update-server/hot-update",
+    "cwd": "./",
     "exec_mode": "cluster",
     "instances": 0,
     "max_memory_restart": "1G",
