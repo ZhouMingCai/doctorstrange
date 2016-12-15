@@ -1,6 +1,6 @@
 {
   "apps": [{
-    "name": "hot-update",
+    "name": "doctorstrange-update",
     "script": "www/production.js",
     "cwd": "./",
     "exec_mode": "cluster",
