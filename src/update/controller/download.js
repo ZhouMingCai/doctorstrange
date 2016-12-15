@@ -32,7 +32,6 @@ export default class extends Base {
 
 
       if (patchId) {
-          console.log('patchId', patchId);
           let patchData = await this.model('patch').getPatchbyId(patchId);
           let patchFilePatch = patchPath+patchData.path;
           fs.exists(patchFilePatch, async (exists) => {
