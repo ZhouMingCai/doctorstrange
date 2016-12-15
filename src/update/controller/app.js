@@ -69,9 +69,6 @@ export default class extends Base {
         let appIcon = this.file('appIcon');
         let infoPlist = this.post('plist');
 
-        console.log(appIcon);
-        console.log(infoPlist);
-
         this.success({
             msg: 'success'
         });
