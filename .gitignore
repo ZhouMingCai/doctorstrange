@@ -7,3 +7,4 @@ dist/*
 www/bundle/*
 *.log
 www/patch/*
+.DS_store
