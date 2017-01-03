@@ -24,6 +24,17 @@ export default class extends Base {
       }
     }
 
+    async addappAction(){
+        let file = this.file('icon');
+        let filepath = file.path;
+
+        let appId = this.get('appName');
+        let jsMajor = this.get('appBundleId');
+        let jsMinor = this.get('description');
+        
+
+    }
+
     /**
      * 根据appID获取app信息
      * @method getappinfobyid

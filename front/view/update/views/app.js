@@ -25,6 +25,7 @@ import { connect } from 'react-redux';
 import {request, str} from 'tools';
 import Drawer from 'material-ui/Drawer';
 import {Page} from 'components';
+
 class App extends Component {
   constructor(props, context) {
     super(props, context);
@@ -140,14 +141,15 @@ class App extends Component {
              <MenuItem value='2'>
                  <Link to='appList' style={s.link} activeStyle={s.activeLink} >应用列表</Link>
              </MenuItem>
-             <MenuItem value='3' >
-                 <Link to='addApp' style={s.link} activeStyle={s.activeLink} >添加应用</Link>
-             </MenuItem>
+
            </IconMenu>
       )
 
   }
 
+  // <MenuItem value='3' >
+  //     <Link to='addApp' style={s.link} activeStyle={s.activeLink} >添加应用</Link>
+  // </MenuItem>
   /**
    * 登出操作
    * @method _logout

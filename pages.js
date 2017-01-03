@@ -10,7 +10,7 @@ var pages = {
     update: {
         client: path.join(__dirname, './front/view/update/client'),
         server: path.join(__dirname, './front/view/update/server')
-    }
+    },
 
 };
 
