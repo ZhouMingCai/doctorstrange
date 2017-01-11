@@ -35,4 +35,12 @@ export default class extends think.model.base {
             state: 1
         }).find();
     }
+
+    /**
+     * [data 插入的数据]
+     * @type {[type]}
+     */
+    async addApp(data){
+        return await this.add(data);
+    }
 }
