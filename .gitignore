@@ -9,3 +9,4 @@ www/bundle/*
 www/patch/*
 .DS_store
 .idea/*
+www/static/appicon/*

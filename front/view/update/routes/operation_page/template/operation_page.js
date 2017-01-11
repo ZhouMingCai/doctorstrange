@@ -150,9 +150,18 @@ class OperationPage extends Component {
                 loading={this.state.loading}
                 muiTheme={muiTheme}
             >
-                <Card style={{textAlign: 'center'}}>
-                <CardText color={green700} style={{fontSize: 36}}>{this.state.data? this.state.data.app_name : ''}</CardText>
-                <CardText >{this.state.data? this.state.data.description : ''}</CardText>
+                <Card
+                    style={{textAlign: 'center'}}
+                >
+                <CardHeader
+                  title={this.state.data? this.state.data.app_name : ''}
+                  avatar={this.state.data? this.state.data.icon : ''}
+                  titleStyle={{
+                      fontSize: 36,
+                      color: green700
+                  }}
+                  subtitle={this.state.data? this.state.data.description : ''}
+                />
                 <CardActions>
                   <RaisedButton label='发布新版本' primary={true} onTouchTap={() => {
                           this.setState({

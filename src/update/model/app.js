@@ -43,4 +43,15 @@ export default class extends think.model.base {
     async addApp(data){
         return await this.add(data);
     }
+
+    /**
+     *
+     */
+    async getAppInfoByBundleIdAndPlatform(bundleId, platform){
+        return await this.where({
+            bundle_id: bundleId,
+            platform: platform,
+            state: 1
+        }).find();
+    }
 }

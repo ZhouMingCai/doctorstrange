@@ -7,20 +7,28 @@ import {Router, Route, Link, IndexLink} from 'react-router'
 import {Page} from 'components';
 import {titleAction} from 'actions';
 import { connect } from 'react-redux';
+import {List, ListItem} from 'material-ui/List';
 
 const s = {
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-  },
-  gridList: {
-    width: 500,
-    height: 500,
-    overflowY: 'auto',
-    marginBottom: 24,
-    padding: 5
-  },
+    root: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        // justifyContent: 'space-around',
+        alignItems: 'flex-start',
+    },
+    gridList: {
+        overflowY: 'auto',
+        marginBottom: 24,
+        padding: 5,
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+    },
+    gridTitle: {
+        height: 100,
+        width: 100,
+        marginRight: 10
+    }
 };
 
 class AppList extends Component {
@@ -61,14 +69,16 @@ class AppList extends Component {
             <Page
                 loading={this.state.loading}
             >
-                <GridList
-                    cellHeight={200}
-                    style={s.gridList}
-                >
-                    {
-                        this._renderItems()
-                    }
-                </GridList>
+                <div style={s.root}>
+                    <List
+                        style={s.gridList}
+                    >
+                        {
+                            this._renderItems()
+                        }
+                    </List>
+                </div>
+
             </Page>
         )
     }
@@ -79,13 +89,14 @@ class AppList extends Component {
                 return (
                     <GridTile
                         key={key}
-                        title={<span>app Name : <b>{item.app_name}</b></span>}
+                        title={<b>{item.app_name}</b>}
                         style={s.gridTitle}
                         titlePosition='top'
-                        subtitle={<span>app bundle ID : <b>{item.bundle_id}</b></span>}
                         onClick={() => this._onAppPress(item)}
                     >
-                        <Link to={'operationpage/'+item.id}  ><img src="http://www.material-ui.com/images/grid-list/00-52-29-429_640.jpg" onClick={() => this._onAppPress(item)}/></Link>
+                        <Link to={'operationpage/'+item.id}  >
+                            <img src={item.icon} onClick={() => this._onAppPress(item)} height='100' width='100'/>
+                        </Link>
                     </GridTile>
                 )
             });

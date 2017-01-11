@@ -66,7 +66,7 @@ module.exports = {
     },
     date : date,
     isEmpty: (copy) => {
-        return copy==null || copy==undefined || copy.trim().length<=0;
+        return copy == '' || copy==null || copy==undefined || copy.trim().length<=0;
     },
     arrIsEmpty: (arr: Array) => {
         return !arr || typeof arr.length == 'undefined' || arr.length <= 0;

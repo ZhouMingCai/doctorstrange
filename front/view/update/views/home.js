@@ -13,6 +13,9 @@ import {TextField} from 'components';
 import {deepOrange500, green700, blue500, orange500} from 'material-ui/styles/colors';
 import FileUpload from 'react-fileupload';
 import LinearProgress from 'material-ui/LinearProgress';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+import {request, str} from 'tools';
 
 
 
@@ -22,16 +25,15 @@ class Home extends Component {
         this.state = {
             showDialog: false,
             appName: '',
-            appBundleId: '',
+            appBundleId: undefined,
             description: '',
-            platform: '',
+            platform: undefined,
             errmsg:'',
-            imgSrc: '',
         };
 
 
         this.options = {
-          baseUrl:'/update/upload/uploadappicon',
+          baseUrl:'/update/app/addapp',
           param:{
               appName: this.state.appName,
               appBundleId: this.state.appBundleId,
@@ -39,7 +41,7 @@ class Home extends Component {
               platform: this.state.platform
           },
           chooseAndUpload: false,
-          dataType: 'image/*',
+          dataType: 'json',
           multiple: false,
           fileFieldName: 'icon',
           chooseFile: (files) => this._chooseFiles(files),
@@ -47,6 +49,7 @@ class Home extends Component {
           doUpload: (files,mill,xhrID) => {
 
           },
+          accept:'image/*',
           uploadSuccess: this._uploadSuccess,
           uploadError: this._uploadError,
           uploadFail: this._uploadError,
@@ -64,12 +67,35 @@ class Home extends Component {
         }
     }
 
+    _beforeUpload = () => {
+        if (this.state.exist == true) {
+            return false;
+        } else if (!this.state.appName || !this.state.appBundleId || !this.state.platform) {
+            return false
+        } else {
+            return true;
+        }
+    }
+
     _uploadSuccess = (res) => {
         if (res.errno == 0) {
             this.setState({
                 errmsg: res.data.errmsg,
-                modalOpen: true,
+                showDialog: false,
+                appName: '',
+                appBundleId: undefined,
+                description: '',
+                platform: undefined,
+                completed: 0,
+                fileName: ''
             });
+
+            this.options.param = {
+                appName: '',
+                appBundleId: undefined,
+                description: '',
+                platform: undefined
+            }
         }
     }
 
@@ -184,14 +210,32 @@ class Home extends Component {
                 </div>
                 <div>
                     <TextField
-                       floatingLabelText='更新说明'
-                       hintText='请填修更新说明'
+                       floatingLabelText='app描述'
+                       hintText='请填写app描述'
                        multiLine={true}
                        rows={2}
                        defaultValue={this.state.description}
                        onChange={(res)=>this._onTextChange('description', res)}
                      />
                 </div>
+                <div>
+                    <SelectField
+                        value={this.state.platform}
+                        onChange={this._handlePlatformSelect}
+                        floatingLabelText='应用平台'
+                        hintText='请选择'
+                        floatingLabelStyle={s.floatingLabelStyle}
+                        floatingLabelFocusStyle={s.floatingLabelFocusStyle}
+                        errorStyle={s.errorStyle}
+                        autoWidth={true}
+                        style={s.selectStyle}
+                        value={this.state.platform}
+                    >
+                        <MenuItem value={1} label="IOS" primaryText="IOS" />
+                        <MenuItem value={2} label="Android" primaryText="Android" />
+                    </SelectField>
+                </div>
+
                 <h5 style={s.errmsg}>
                     上述信息皆为必填信息
                 </h5>
@@ -229,7 +273,48 @@ class Home extends Component {
         )
     }
 
+    _handlePlatformSelect = (event, index, value) => {
+        this.options.param.platform = value;
+        this.setState({
+            platform: value
+        });
+    }
 
+
+    componentDidUpdate(prevProps, prevState) {
+        if ((this.state.platform != prevState.platform ||
+            this.state.appBundleId != prevState.appBundleId)
+            && this.state.platform !== undefined
+            && this.state.appBundleId !== undefined) {
+            request(
+                '/update/app/appexist',
+                {
+                    appBundleId: this.state.appBundleId,
+                    platform: this.state.platform,
+                },
+                (res) => {
+                    console.log(res);
+                    if (res.exist) {
+                        this.setState({
+                            exist: res.exist,
+                            errmsg: '该应用已存在！'
+                        });
+                    } else {
+                        this.setState({
+                            exist: res.exist,
+                        });
+                    }
+
+                },
+                (err) => {
+                    this.setState({
+                        pageLoading: false,
+                        errmsg: err.errorMsg? err.errorMsg : '访问出错了，请重试！',
+                    });
+                }
+            )
+        }
+    }
     /**
      * 版本号变更
      * @method _onTextChange
@@ -271,7 +356,6 @@ class Home extends Component {
 
 
     _addAppDialog = () => {
-        console.log('ssss');
         this.setState({
             showDialog: true,
         });
